@@ -5,6 +5,8 @@
 #include "wave.h"
 #include "rock.h"
 #include "iceberg.h"
+#include "whirpool.h"
+
 using namespace chai3d;
 
 class GameMap
@@ -24,6 +26,7 @@ public:
     Wave* wave;
     Rock* rock;
     iceBerg* iceberg;
+    whirPool* whirpool;
 
     GameMap();
 
@@ -54,7 +57,7 @@ public:
     double base = 1000.0;
 
     void setTotalTime(double t);
-    bool willBeBlocked(int x,int y);
+    bool willBeBlocked(double x,double y);
 };
 
 #endif // GAMEMAP_H
