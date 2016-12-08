@@ -35,11 +35,8 @@ public:
 
     int blood = 1000;
 
-    int currentx = 0;
-    int currenty = 50;
-
-    int xaccm = 0;
-    int yaccm = 0;
+    double currentx = 0;
+    double currenty = 50;
 
     double xthreshold = 0.015;
     double ythreshold = 0.015;
@@ -51,9 +48,10 @@ public:
     double xspeed;
     double yspeed;
 
-    int incbase = 1000;
-    int xincth = 1000;
-    int yincth = 1000;
+    double xinc;
+    double yinc;
+
+    double base = 1000.0;
 
     void setTotalTime(double t);
     bool willBeBlocked(int x,int y);

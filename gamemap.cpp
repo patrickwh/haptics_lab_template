@@ -40,71 +40,54 @@ bool GameMap::willBeBlocked(int x,int y){
 void GameMap::setXspeed(double pos){
     if(pos<=xthreshold){
         xspeed = 0;
-        xincth = 0;
+        xinc = 0;
     }else{
         xspeed = (pos-xthreshold)/xstep;
-        xincth = incbase/xspeed;
+        xinc = xspeed/base;
     }
 }
 
 void GameMap::setYspeed(double pos){
     if(pos<=ythreshold){
         yspeed = 0;
-        yincth = 0;
+        yinc = 0;
     }else{
         yspeed = (pos-ythreshold)/ystep;
-        yincth = incbase/yspeed;
+        yinc = yspeed/base;
     }
 }
 
 void GameMap::updateXpos(double x){
-    double xabs = abs(x);
+    double xabs = cAbs(x);
     if(xabs>xthreshold){
         setXspeed(xabs);
         if(x>0){
-            xaccm++;
-            if(xaccm>xincth){
-                currentx++;
-                if(willBeBlocked(currentx,currenty)) currentx--;
-                currentx = currentx>=xmax?xmax:currentx;
-                xaccm = 0;
-            }
+            currentx += xinc;
+            if(willBeBlocked(currentx,currenty)) currentx-=xinc;
+            currentx = currentx>=xmax?xmax:currentx;
         }
-        else{
-            xaccm--;
-            if(xaccm<0){
-                currentx--;
-                if(willBeBlocked(currentx,currenty)) currentx++;
-                currentx = currentx<=0?0:currentx;
-                xaccm = xincth;
-            }
-        }
+        if(x<0){
+            currentx -= xinc;
+            if(willBeBlocked(currentx,currenty)) currentx+=xinc;
+            currentx = currentx<=0?0:currentx;
+       }
     }
 }
 
 void GameMap::updateYpos(double y){
-    double yabs = abs(y);
-    if(yabs > ythreshold)
-    {
+    double yabs = cAbs(y);
+    if(yabs>ythreshold){
         setYspeed(yabs);
         if(y>0){
-            yaccm++;
-            if(yaccm>yincth){
-                currenty++;
-                if(willBeBlocked(currentx,currenty)) currenty--;
-                currenty = currenty>=ymax?ymax:currenty;
-                yaccm = 0;
-            }
+            currenty += yinc;
+            if(willBeBlocked(currentx,currenty)) currenty-=yinc;
+            currenty = currenty>=ymax?ymax:currenty;
         }
-        else{
-            yaccm--;
-            if(yaccm<0){
-                currenty--;
-                if(willBeBlocked(currentx,currenty)) currenty++;
-                currenty = currenty<=0?0:currenty;
-                yaccm = yincth;
-            }
-        }
+        if(y<0){
+            currenty -= yinc;
+            if(willBeBlocked(currentx,currenty)) currenty+=yinc;
+            currenty = currenty<=0?0:currenty;
+       }
     }
 }
 
