@@ -7,14 +7,14 @@ using namespace chai3d;
 class iceBerg
 {
 public:
-    iceBerg(int x,int y,int r);
-    cVector3d iceForce(int x,int y);
+    iceBerg(double x,double y,double r);
+    cVector3d iceForce(double x,double y);
     bool triggered = false;
 public:
-    int xpos =0;
-    int ypos = 0;
-    int radius =0;
-    bool willBeBlocked(int x,int y);
+    double xpos =0;
+    double ypos = 0;
+    double radius =0;
+    bool willBeBlocked(double x,double y);
 };
 
 #endif // ICEBERG_H

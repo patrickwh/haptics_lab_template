@@ -6,13 +6,14 @@ using namespace chai3d;
 class whirPool
 {
 public:
-    whirPool(int x, int y, int r);
-    cVector3d poolForce(int x,int y);
-    bool triggered = false;
-    int xpos = 0;
-    int ypos = 0;
-    int radius = 0;
-    bool willBeStuck(int x,int y);
+    whirPool(double x, double y, double r);
+    cVector3d poolForce(double x,double y);
+//    bool istriggered = false;
+public:
+    double xpos = 0;
+    double ypos = 0;
+    double radius = 0;
+//    bool willBeStuck(int x,int y);
 };
 
 #endif // WHIRPOOL_H
