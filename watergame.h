@@ -90,37 +90,49 @@ void WaterGame::initialize(cWorld* world, cCamera* camera)
 
     // *************************** ADD OBJECTS INTO THE WORLD******************************
     // iceberg object
-    double icesr = xstep*map.iceberg->radius;
-    double x = xstep*(map.iceberg->xpos-halfmax);
-    double y = xstep*(map.iceberg->ypos-halfmax);
-    cShapeSphere* icebergsp = new cShapeSphere(icesr);
-    icebergsp->setLocalPos(0.0,y,x);
-    world->addChild(icebergsp);
+    QListIterator <iceBerg*> iitr(map.iceberg);
+    while(iitr.hasNext()){
+        iceBerg* ice = iitr.next();
+        double icesr = xstep*ice->radius;
+        double x = xstep*(ice->xpos-halfmax);
+        double y = xstep*(ice->ypos-halfmax);
+        cShapeSphere* icebergsp = new cShapeSphere(icesr);
+        icebergsp->setLocalPos(0.0,y,x);
+        world->addChild(icebergsp);
+    }
     // rock object
-    double xsz = 0.0001;
-    double ysz = xstep*map.rock->width;
-    double zsz = xstep*map.rock->height;
-    cShapeBox* rockbx = new cShapeBox(xsz,ysz,zsz);
-    x = xstep*(map.rock->xpos-halfmax+map.rock->height/2);
-    y = xstep*(map.rock->ypos-halfmax+map.rock->width/2);
-    rockbx->setLocalPos(0.0,y,x);
-    world->addChild(rockbx);
+    QListIterator <Rock*> ritr(map.rock);
+    while(ritr.hasNext()){
+        Rock* r = ritr.next();
+        double xsz = 0.0001;
+        double ysz = xstep*r->width;
+        double zsz = xstep*r->height;
+        cShapeBox* rockbx = new cShapeBox(xsz,ysz,zsz);
+        double x = xstep*(r->xpos-halfmax+r->height/2);
+        double y = xstep*(r->ypos-halfmax+r->width/2);
+        rockbx->setLocalPos(0.0,y,x);
+        world->addChild(rockbx);
+    }
     // whirpool object
-    double whirpoolr = xstep*map.whirpool->radius;
-    x = xstep*(map.whirpool->xpos-halfmax);
-    y = xstep*(map.whirpool->ypos-halfmax);
-    cMaterialPtr whirpoolc = cMaterialPtr(new cMaterial());
-    whirpoolc->m_ambient.set(0.5, 0.2, 0.0);
-    whirpoolc->m_diffuse.set(1.0, 0.5, 0.0);
-    whirpoolc->m_specular.set(1.0, 1.0, 1.0);
-    cShapeSphere* whirpoolsp = new cShapeSphere(whirpoolr);
-    whirpoolsp->setLocalPos(0.0,y,x);
-    whirpoolsp->m_material = whirpoolc;
-    world->addChild(whirpoolsp);
+    QListIterator <whirPool*> witr(map.whirpool);
+    while(witr.hasNext()){
+        whirPool* w = witr.next();
+        double whirpoolr = xstep*w->radius;
+        double x = xstep*(w->xpos-halfmax);
+        double y = xstep*(w->ypos-halfmax);
+        cMaterialPtr whirpoolc = cMaterialPtr(new cMaterial());
+        whirpoolc->m_ambient.set(0.5, 0.2, 0.0);
+        whirpoolc->m_diffuse.set(1.0, 0.5, 0.0);
+        whirpoolc->m_specular.set(1.0, 1.0, 1.0);
+        cShapeSphere* whirpoolsp = new cShapeSphere(whirpoolr);
+        whirpoolsp->setLocalPos(0.0,y,x);
+        whirpoolsp->m_material = whirpoolc;
+        world->addChild(whirpoolsp);
+    }
     // boat object
     boat = new cShapeSphere(0.002);
-    x = xstep*(map.currentx-halfmax);
-    y = xstep*(map.currenty-halfmax);
+    double x = xstep*(map.currentx-halfmax);
+    double y = xstep*(map.currenty-halfmax);
     boat->setLocalPos(0.0,y,x);
     cMaterialPtr boatc = cMaterialPtr(new cMaterial());
     boatc->m_ambient.set(0.5, 0.2, 0.0);
@@ -241,8 +253,6 @@ void WaterGame::updateHaptics(cGenericHapticDevice* hapticDevice, double timeSte
     map.updateXpos(x);
     map.updateYpos(y);
 
-    std::cout<<"pos: "<<map.currentx<<" "<<map.currenty<<" ; ";
-
     map.setTotalTime(totalTime);
     cVector3d f = map.getForceFeedback(map.currentx,map.currenty);
     f.add(centerForce);
@@ -250,7 +260,6 @@ void WaterGame::updateHaptics(cGenericHapticDevice* hapticDevice, double timeSte
 
     double xx = xstep*(map.currentx-halfmax);
     double yy = xstep*(map.currenty-halfmax);
-    std::cout<<"sp: "<<xx<<" "<<yy<<std::endl;
     boat->setLocalPos(0.0,yy,xx);
 }
 #endif

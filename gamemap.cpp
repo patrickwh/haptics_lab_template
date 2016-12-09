@@ -3,24 +3,43 @@
 
 
 cVector3d GameMap::getForceFeedback(int xpos, int ypos){
-    cVector3d fwave = wave->getForceFeedback(xpos,ypos,totalTime);
-    cVector3d frock = rock->getForceFeedback(xpos,ypos,totalTime,xpositionUpdated,ypositionUpdated);
-    cVector3d fice = iceberg->iceForce(xpos,ypos);
-    cVector3d fpool = whirpool->poolForce(xpos,ypos);
 
-    //std::cout<<"f: "<<fice(0)<<" "<<fice(1)<<";";
+    cVector3d fwave = wave->getForceFeedback(xpos,ypos,totalTime);
 
     cVector3d f(0,0,0);
 
-    if(rock->triggered){
+    bool isRocktriggered = false;
+
+    QListIterator<Rock*> ritr(rock);
+    while(ritr.hasNext()){
+        Rock* r = ritr.next();
+        if(r->triggered){
+            isRocktriggered = true;
+        }
+        cVector3d frock = r->getForceFeedback(xpos,ypos,totalTime,xpositionUpdated,ypositionUpdated);
         f.add(frock);
+    }
+
+    if(isRocktriggered){
         speedScale = 0.2;
     }else{
         f.add(fwave);
         speedScale = 1.0;
     }
-    f.add(fice);
-    f.add(fpool);
+
+    QListIterator <iceBerg*> iitr(iceberg);
+    while(iitr.hasNext()){
+        iceBerg* ice = iitr.next();
+        cVector3d fice = ice->iceForce(xpos,ypos);
+        f.add(fice);
+    }
+
+    QListIterator <whirPool*> witr(whirpool);
+    while(witr.hasNext()){
+        whirPool* w = witr.next();
+        cVector3d fpool = w->poolForce(xpos,ypos);
+        f.add(fpool);
+    }
 
     return f;
 }
@@ -33,13 +52,25 @@ GameMap::GameMap(){
     int ainit = 10;
     double finit = 1;
     wave = new Wave(ainit,finit);
-    rock = new Rock(5,25,50,5);
-    iceberg = new iceBerg(25,50,10);
-    whirpool = new whirPool(50,50,5);
+    rock << new Rock(5,25,50,5);
+    iceberg << new iceBerg(25,50,10);
+    whirpool << new whirPool(50,50,5);
+    whirpool << new whirPool(50,75,5);
+    whirpool << new whirPool(75,50,5);
 }
 
 bool GameMap::willBeBlocked(double x,double y){
-    return iceberg->willBeBlocked(x,y);
+    bool blocked = false;
+    QListIterator<iceBerg*> itr(iceberg);
+    while(itr.hasNext()){
+        iceBerg* i = itr.next();
+        if(i->willBeBlocked(x,y))
+        {
+            blocked = true;
+            break;
+        }
+    }
+    return blocked;
 }
 
 void GameMap::setXspeed(double pos){

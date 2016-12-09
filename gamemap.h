@@ -1,6 +1,8 @@
 #ifndef GAMEMAP_H
 #define GAMEMAP_H
 
+#include <QList>
+#include <QListIterator>
 #include "chai3d.h"
 #include "wave.h"
 #include "rock.h"
@@ -26,9 +28,9 @@ public:
     cVector3d getForceFeedback(int xpos,int ypos);
 
     Wave* wave;
-    Rock* rock;
-    iceBerg* iceberg;
-    whirPool* whirpool;
+    QList <Rock*> rock;
+    QList <iceBerg*> iceberg;
+    QList <whirPool*> whirpool;
 
     GameMap();
 
