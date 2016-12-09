@@ -19,7 +19,7 @@ public:
     int width;
     int height;
 
-    cVector3d getForceFeedback(int x,int y, double t);
+    cVector3d getForceFeedback(double x,double y, double t,bool xupdate,bool yupdate);
 
 };
 

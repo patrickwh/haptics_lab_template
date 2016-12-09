@@ -20,6 +20,8 @@ public:
     int destx = 99;
     int desty = 99;
     bool blocked = false;
+    bool xpositionUpdated = false;
+    bool ypositionUpdated = false;
 
     cVector3d getForceFeedback(int xpos,int ypos);
 
@@ -38,8 +40,10 @@ public:
 
     int blood = 1000;
 
-    double currentx = 0;
-    double currenty = 50;
+    double xstart = 0;
+    double ystart = 50;
+    double currentx = xstart;
+    double currenty = ystart;
 
     double xthreshold = 0.015;
     double ythreshold = 0.015;
@@ -54,7 +58,8 @@ public:
     double xinc;
     double yinc;
 
-    double base = 1000.0;
+    double base = 250.0;
+    double speedScale = 1.0;
 
     void setTotalTime(double t);
     bool willBeBlocked(double x,double y);

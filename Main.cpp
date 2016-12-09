@@ -1,25 +1,25 @@
 //===========================================================================
 /*
 
-	CS277 - Experimental Haptics
-	Winter 2010, Stanford University
+    CS277 - Experimental Haptics
+    Winter 2010, Stanford University
 
 
-	You may use this program as a boilerplate for starting your homework
-	assignments.  Use CMake (www.cmake.org) on the CMakeLists.txt file to
-	generate project files for the development tool of your choice.  The
-	CHAI3D library directory (chai3d-2.1.0) should be installed as a sibling
-	directory to the one containing this project.
+    You may use this program as a boilerplate for starting your homework
+    assignments.  Use CMake (www.cmake.org) on the CMakeLists.txt file to
+    generate project files for the development tool of your choice.  The
+    CHAI3D library directory (chai3d-2.1.0) should be installed as a sibling
+    directory to the one containing this project.
 
 
-	These files are meant to be helpful should you encounter difficulties
-	setting up a working CHAI3D project.  However, you are not required to
-	use them for your homework -- you may start from anywhere you'd like.
+    These files are meant to be helpful should you encounter difficulties
+    setting up a working CHAI3D project.  However, you are not required to
+    use them for your homework -- you may start from anywhere you'd like.
 
 
-	\author    Francois Conti & Sonny Chan
-	\date      January 2010
-	*/
+    \author    Francois Conti & Sonny Chan
+    \date      January 2010
+    */
 //===========================================================================
 // This define is needed for some gcc5 reason
 // http://stackoverflow.com/questions/33394934/converting-std-cxx11string-to-stdstring
@@ -52,8 +52,8 @@
 // DECLARED CONSTANTS
 //---------------------------------------------------------------------------
 // Initial size (width/height) in pixels of the display window
-const int WINDOW_SIZE_W = 600;
-const int WINDOW_SIZE_H = 600;
+const int WINDOW_SIZE_W = 900;
+const int WINDOW_SIZE_H = 900;
 
 
 // Mouse menu options (right button)
@@ -148,19 +148,19 @@ void reset(size_t assignmentId);
 //===========================================================================
 
 /*
-	This application illustrates the use of the haptic device handler
-	"cHapticDevicehandler" to access haptic devices connected to the computer.
+    This application illustrates the use of the haptic device handler
+    "cHapticDevicehandler" to access haptic devices connected to the computer.
 
 
-	In this example the application opens an OpenGL window and displays a
-	3D cursor for the first device found. If the operator presses the device
-	user button, the color of the cursor changes accordingly.
+    In this example the application opens an OpenGL window and displays a
+    3D cursor for the first device found. If the operator presses the device
+    user button, the color of the cursor changes accordingly.
 
-	In the main haptics loop function  "updateHaptics()" , the position and
-	user switch status of the device are retrieved at each simulation iteration.
-	This information is then used to update the position and color of the
-	cursor. A force is then commanded to the haptic device to attract the
-	end-effector towards the device origin.
+    In the main haptics loop function  "updateHaptics()" , the position and
+    user switch status of the device are retrieved at each simulation iteration.
+    This information is then used to update the position and color of the
+    cursor. A force is then commanded to the haptic device to attract the
+    end-effector towards the device origin.
 */
 //===========================================================================
 
@@ -169,113 +169,113 @@ void reset(size_t assignmentId);
 int main(int argc, char* argv[])
 {
 
-	//-----------------------------------------------------------------------
-	// INITIALIZATION
-	//-----------------------------------------------------------------------
-	std::cout << std::endl;
-	std::cout << "Based on:" << std::endl;
-	std::cout << "-----------------------------------" << std::endl;
-	std::cout << "CS277 - Experimental Haptics" << std::endl;
-	std::cout << "Homework Boilerplate Application" << std::endl;
-	std::cout << "January 2010, Stanford University" << std::endl;
-	std::cout << "-----------------------------------" << std::endl;
-	std::cout << std::endl << std::endl;
+    //-----------------------------------------------------------------------
+    // INITIALIZATION
+    //-----------------------------------------------------------------------
+    std::cout << std::endl;
+    std::cout << "Based on:" << std::endl;
+    std::cout << "-----------------------------------" << std::endl;
+    std::cout << "CS277 - Experimental Haptics" << std::endl;
+    std::cout << "Homework Boilerplate Application" << std::endl;
+    std::cout << "January 2010, Stanford University" << std::endl;
+    std::cout << "-----------------------------------" << std::endl;
+    std::cout << std::endl << std::endl;
 
-	//-----------------------------------------------------------------------
-	// ASSIGNMENTS
-	//-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    // ASSIGNMENTS
+    //-----------------------------------------------------------------------
 
-	// Load the available assignment scenes
-	assignments.push_back(new HelloWorld());
-	assignments.push_back(new ReadDevicePosition());
-	assignments.push_back(new BasicForceEffects());
-	assignments.push_back(new HapticWall());
-	assignments.push_back(new MagneticEffect());
-	assignments.push_back(new HapticSphere());
+    // Load the available assignment scenes
+//    assignments.push_back(new HelloWorld());
+//    assignments.push_back(new ReadDevicePosition());
+//    assignments.push_back(new BasicForceEffects());
+//    assignments.push_back(new HapticWall());
+//    assignments.push_back(new MagneticEffect());
+//    assignments.push_back(new HapticSphere());
     assignments.push_back(new WaterGame());
 
-	//-----------------------------------------------------------------------
-	// HAPTIC DEVICES / TOOLS
-	//-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    // HAPTIC DEVICES / TOOLS
+    //-----------------------------------------------------------------------
 
     // Create a haptic device handler
     handler = new cHapticDeviceHandler();
 
-	// Read the number of haptic devices currently connected to the computer
+    // Read the number of haptic devices currently connected to the computer
     int numHapticDevices = handler->getNumDevices();
 
     // If there is at least one haptic device detected...
-	if (numHapticDevices)
-	{
+    if (numHapticDevices)
+    {
 
-		// Get a handle to the first haptic device
-		handler->getDevice(hapticDevice);
+        // Get a handle to the first haptic device
+        handler->getDevice(hapticDevice);
 
-		// Open connection to haptic device
-		hapticDevice->open();
+        // Open connection to haptic device
+        hapticDevice->open();
 
         // Calbrate if needed
         hapticDevice->calibrate();
 
-		// Retrieve information about the current haptic device
-		cHapticDeviceInfo info = hapticDevice->getSpecifications();
-	}
+        // Retrieve information about the current haptic device
+        cHapticDeviceInfo info = hapticDevice->getSpecifications();
+    }
 
-	//-----------------------------------------------------------------------
-	// OPEN GL - WINDOW DISPLAY
-	//-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    // OPEN GL - WINDOW DISPLAY
+    //-----------------------------------------------------------------------
 
-	// Initialize GLUT
-	glutInit(&argc, argv);
+    // Initialize GLUT
+    glutInit(&argc, argv);
 
-	// Retrieve the resolution of the computer display and estimate the position
-	// of the GLUT window so that it is located at the center of the screen
-	int screenW = glutGet(GLUT_SCREEN_WIDTH);
-	int screenH = glutGet(GLUT_SCREEN_HEIGHT);
-	int windowPosX = (screenW - WINDOW_SIZE_W) / 2;
-	int windowPosY = (screenH - WINDOW_SIZE_H) / 2;
+    // Retrieve the resolution of the computer display and estimate the position
+    // of the GLUT window so that it is located at the center of the screen
+    int screenW = glutGet(GLUT_SCREEN_WIDTH);
+    int screenH = glutGet(GLUT_SCREEN_HEIGHT);
+    int windowPosX = (screenW - WINDOW_SIZE_W) / 2;
+    int windowPosY = (screenH - WINDOW_SIZE_H) / 2;
 
 
-	// Initialize the OpenGL GLUT window
-	glutInitWindowPosition(windowPosX, windowPosY);
+    // Initialize the OpenGL GLUT window
+    glutInitWindowPosition(windowPosX, windowPosY);
     glutInitWindowSize(WINDOW_SIZE_W, WINDOW_SIZE_H);
-	glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
-	glutCreateWindow(argv[0]);
-	glutDisplayFunc(updateGraphics);
-	glutKeyboardFunc(keySelect);
-	glutReshapeFunc(resizeWindow);
+    glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
+    glutCreateWindow(argv[0]);
+    glutDisplayFunc(updateGraphics);
+    glutKeyboardFunc(keySelect);
+    glutReshapeFunc(resizeWindow);
     glutSetWindowTitle("DT2140,multimodal interaction and interfaces,lab4");
     glewInit();
 
 
-	// Create a mouse menu (right button)
-	glutCreateMenu(menuSelect);
-	glutAddMenuEntry("full screen", OPTION_FULLSCREEN);
-	glutAddMenuEntry("window display", OPTION_WINDOWDISPLAY);
+    // Create a mouse menu (right button)
+    glutCreateMenu(menuSelect);
+    glutAddMenuEntry("full screen", OPTION_FULLSCREEN);
+    glutAddMenuEntry("window display", OPTION_WINDOWDISPLAY);
     glutAttachMenu(GLUT_RIGHT_BUTTON);
 
     //-----------------------------------------------------------------------
-	// START SIMULATION
-	//-----------------------------------------------------------------------
-	// Initialize the world with assignment 0
-	reset(0);
+    // START SIMULATION
+    //-----------------------------------------------------------------------
+    // Initialize the world with assignment 0
+    reset(0);
 
-	// Simulation in now running
-	simulationRunning = true;
+    // Simulation in now running
+    simulationRunning = true;
 
     // Create a thread which starts the main haptics rendering loop
     cThread* hapticsThread = new cThread();
     hapticsThread->start(updateHaptics, CTHREAD_PRIORITY_HAPTICS);
 
-	// Start the main graphics rendering loop
+    // Start the main graphics rendering loop
     glutTimerFunc(50, graphicsTimer, 0);
-	glutMainLoop();
+    glutMainLoop();
 
-	// Close everything
-	close();
+    // Close everything
+    close();
 
-	// Exit
-	return (0);
+    // Exit
+    return (0);
 }
 //---------------------------------------------------------------------------
 
@@ -293,37 +293,37 @@ void graphicsTimer(int)
 
 void reset(size_t assignmentId)
 {
-	// Deactivate the old scene
-	assignments[currentAssignment]->setInitialized(false);
-	currentAssignment = assignmentId;
+    // Deactivate the old scene
+    assignments[currentAssignment]->setInitialized(false);
+    currentAssignment = assignmentId;
 
-	// Delete the old world and create a new one
+    // Delete the old world and create a new one
     delete world;
-	world = new cWorld();
-	world->setBackgroundColor(0.0, 0.0, 0.0);
+    world = new cWorld();
+    world->setBackgroundColor(0.0, 0.0, 0.0);
 
-	// Create a camera and insert it into the virtual world
-	camera = new cCamera(world);
-	world->addChild(camera);
+    // Create a camera and insert it into the virtual world
+    camera = new cCamera(world);
+    world->addChild(camera);
 
-	// Position and oriente the camera
-	camera->set(cVector3d(0.2, 0.0, 0.0),    // camera position (eye)
+    // Position and oriente the camera
+    camera->set(cVector3d(0.2, 0.0, 0.0),    // camera position (eye)
                 cVector3d(0.0, 0.0, 0.0),    // lookat position (target)
                 cVector3d(0.0, 0.0, 1.0));   // direction of the "up" vector
 
 
-	// Set the near and far clipping planes of the camera
-	// anything in front/behind these clipping planes will not be rendered
-	camera->setClippingPlanes(0.01, 10.0);
+    // Set the near and far clipping planes of the camera
+    // anything in front/behind these clipping planes will not be rendered
+    camera->setClippingPlanes(0.01, 10.0);
 
-	// Create a light source and attach it to the camera
+    // Create a light source and attach it to the camera
     light = new cDirectionalLight(world);
-	camera->addChild(light);                   // attach light to camera
-	light->setEnabled(true);                   // enable light source
+    camera->addChild(light);                   // attach light to camera
+    light->setEnabled(true);                   // enable light source
     light->setLocalPos(cVector3d(2.0, 0.5, 1.0));  // position the light source
-	light->setDir(cVector3d(-2.0, 0.5, 1.0));  // define the direction of the light beam
+    light->setDir(cVector3d(-2.0, 0.5, 1.0));  // define the direction of the light beam
 
-	// Create a label that shows the haptic loop update rate
+    // Create a label that shows the haptic loop update rate
     cFont *font = NEW_CFONTCALIBRI20();
     rateLabel = new cLabel(font);
     camera->m_frontLayer->addChild(rateLabel);
@@ -337,69 +337,69 @@ void reset(size_t assignmentId)
     assignmentLabel = new cLabel(font);
     camera->m_frontLayer->addChild(assignmentLabel);
 
-	// Initialize the current assignment
+    // Initialize the current assignment
     assignments[currentAssignment]->initialize(world, camera);
 
-	// Update the assignment label
+    // Update the assignment label
     assignmentLabel->setString(assignments[currentAssignment]->getName());
 
-	// Precalculate width to make it centered
+    // Precalculate width to make it centered
     assignmentLabelWidth = assignmentLabel->m_font->getStringWidth(assignmentLabel->getString());
     assignments[currentAssignment]->setInitialized(true);
 
 
-	// Restart the clock measuring total time elapsed
-	clockTotal.start(true);
+    // Restart the clock measuring total time elapsed
+    clockTotal.start(true);
 }
 //---------------------------------------------------------------------------
 
 
 void resizeWindow(int w, int h)
 {
-	// Update the size of the viewport
-	displayW = w;
-	displayH = h;
-	glViewport(0, 0, displayW, displayH);
+    // Update the size of the viewport
+    displayW = w;
+    displayH = h;
+    glViewport(0, 0, displayW, displayH);
 }
 
 
 //---------------------------------------------------------------------------
 void keySelect(unsigned char key, int, int)
 {
-	// Escape key
-	if ((key == 27) || (key == 'x'))
-	{
-		// Close everything
-		close();
+    // Escape key
+    if ((key == 27) || (key == 'x'))
+    {
+        // Close everything
+        close();
 
-		// Exit application
-		exit(0);
-	}
+        // Exit application
+        exit(0);
+    }
 
     // Key 1 - 9 corresponding to an existing assignment
-	if (key >= '1' && key < '1' + assignments.size())
-	{
-		// Change assignment
-		reset(key - '1');
-	}
+    if (key >= '1' && key < '1' + assignments.size())
+    {
+        // Change assignment
+        reset(key - '1');
+    }
 }
 //---------------------------------------------------------------------------
 
 
 void menuSelect(int value)
 {
-	switch (value)
-	{
+    switch (value)
+    {
         // Enable full screen display
         case OPTION_FULLSCREEN:
-		glutFullScreen();
-		break;
+        glutFullScreen();
+        break;
 
         // Reshape window to original size
         case OPTION_WINDOWDISPLAY:
-		glutReshapeWindow(WINDOW_SIZE_W, WINDOW_SIZE_H);
-		break;
-	}
+        glutReshapeWindow(WINDOW_SIZE_W, WINDOW_SIZE_H);
+        break;
+    }
 }
 
 
@@ -407,17 +407,17 @@ void menuSelect(int value)
 
 void close(void)
 {
-	// Stop the simulation
-	simulationRunning = false;
+    // Stop the simulation
+    simulationRunning = false;
 
     // Wait for graphics and haptics loops to terminate
-	while (!simulationFinished) { cSleepMs(100); }
+    while (!simulationFinished) { cSleepMs(100); }
 
-	// Close the haptic devices
-	if (hapticDevice)
-	{
-		hapticDevice->close();
-	}
+    // Close the haptic devices
+    if (hapticDevice)
+    {
+        hapticDevice->close();
+    }
 }
 
 //---------------------------------------------------------------------------
@@ -425,49 +425,49 @@ void close(void)
 void updateGraphics(void)
 {
 
-	// Update the label showing the position of the haptic device
-	if (hapticDevice)
-	{
-		cVector3d position;
-		hapticDevice->getPosition(position);
-		position = position * 1000.0; // Convert to mm
+    // Update the label showing the position of the haptic device
+    if (hapticDevice)
+    {
+        cVector3d position;
+        hapticDevice->getPosition(position);
+        position = position * 1000.0; // Convert to mm
 
-		char buffer[128];
+        char buffer[128];
 
         sprintf(buffer, "Device position: (%.2lf, %.2lf, %.2lf) mm", position.x(), position.y(), position.z());
 
-		//Set the text to the label
+        //Set the text to the label
         positionLabel->setString(buffer);
-	}
+    }
 
-	if (assignments[currentAssignment]->isInitialized())
-		assignments[currentAssignment]->updateGraphics();
+    if (assignments[currentAssignment]->isInitialized())
+        assignments[currentAssignment]->updateGraphics();
 
 
-	// Update the label with the haptic refresh rate
-	char buffer[128];
-	sprintf(buffer, "Haptic rate: %.0lf Hz", rateEstimate);
+    // Update the label with the haptic refresh rate
+    char buffer[128];
+    sprintf(buffer, "Haptic rate: %.0lf Hz", rateEstimate);
     rateLabel->setString(buffer);
     rateLabel->setLocalPos(displayW - 120, 8, 0);
 
     assignmentLabel->setLocalPos(0.5 * (displayW - assignmentLabelWidth), displayH - 20, 0);
 
-	// Render world
-	camera->renderView(displayW, displayH);
+    // Render world
+    camera->renderView(displayW, displayH);
 
-	// Swap buffers
-	glutSwapBuffers();
+    // Swap buffers
+    glutSwapBuffers();
 
-	// Check for any OpenGL errors
-	GLenum err;
-	err = glGetError();
-	if (err != GL_NO_ERROR) printf("Error:  %s\n", gluErrorString(err));
+    // Check for any OpenGL errors
+    GLenum err;
+    err = glGetError();
+    if (err != GL_NO_ERROR) printf("Error:  %s\n", gluErrorString(err));
 
-	// Inform the GLUT window to call updateGraphics again (next frame)
-	if (simulationRunning)
-	{
-		glutPostRedisplay();
-	}
+    // Inform the GLUT window to call updateGraphics again (next frame)
+    if (simulationRunning)
+    {
+        glutPostRedisplay();
+    }
 }
 
 //---------------------------------------------------------------------------
@@ -475,43 +475,43 @@ void updateGraphics(void)
 
 void updateHaptics(void)
 {
-	// A clock to estimate the haptic simulation loop update rate
-	cPrecisionClock pclock;
-	pclock.setTimeoutPeriodSeconds(1.0);
-	pclock.start(true);
-	int counter = 0;
-	cPrecisionClock frameClock;
-	frameClock.start(true);
+    // A clock to estimate the haptic simulation loop update rate
+    cPrecisionClock pclock;
+    pclock.setTimeoutPeriodSeconds(1.0);
+    pclock.start(true);
+    int counter = 0;
+    cPrecisionClock frameClock;
+    frameClock.start(true);
 
-	// Main haptic simulation loop
-	while (simulationRunning)
-	{
-		if (!hapticDevice)
-			continue;
+    // Main haptic simulation loop
+    while (simulationRunning)
+    {
+        if (!hapticDevice)
+            continue;
 
-		// Total time elapsed since the current assignment started
-		double totalTime = clockTotal.getCurrentTimeSeconds();
+        // Total time elapsed since the current assignment started
+        double totalTime = clockTotal.getCurrentTimeSeconds();
 
-		// Time elapsed since the previous haptic frame
-		double timeStep = frameClock.getCurrentTimeSeconds();
-		frameClock.start(true);
+        // Time elapsed since the previous haptic frame
+        double timeStep = frameClock.getCurrentTimeSeconds();
+        frameClock.start(true);
 
-		// Update assignment
-		if (assignments[currentAssignment]->isInitialized())
+        // Update assignment
+        if (assignments[currentAssignment]->isInitialized())
             assignments[currentAssignment]->updateHaptics(hapticDevice.get(), timeStep, totalTime);
 
-		// Estimate the refresh rate
-		++counter;
-		if (pclock.timeoutOccurred()) {
-			pclock.stop();
-			rateEstimate = counter;
-			counter = 0;
-			pclock.start(true);
-		}
-	}
+        // Estimate the refresh rate
+        ++counter;
+        if (pclock.timeoutOccurred()) {
+            pclock.stop();
+            rateEstimate = counter;
+            counter = 0;
+            pclock.start(true);
+        }
+    }
 
-	// Exit haptics thread
-	simulationFinished = true;
+    // Exit haptics thread
+    simulationFinished = true;
 }
 
 //---------------------------------------------------------------------------
