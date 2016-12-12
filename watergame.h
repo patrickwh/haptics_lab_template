@@ -91,13 +91,13 @@ void WaterGame::initialize(cWorld* world, cCamera* camera)
         entrancec->m_specular.set(1.0, 1.0, 1.0);
         currentsp1->m_material = entrancec;
         currentsp1->setLocalPos(0.0,y1,x1);
-        // world->addChild(currentsp1);
+        world->addChild(currentsp1);
         cShapeSphere* currentsp2 = new cShapeSphere(currentr);
         double x2 = xstep*(current->x2-halfmax);
         double y2 = xstep*(current->y2-halfmax);
         currentsp2->m_material = entrancec;
         currentsp2->setLocalPos(0.0,y2,x2);
-        // world->addChild(currentsp2);
+        world->addChild(currentsp2);
     }
     // rock object
     QListIterator <Rock*> ritr(map.rock);

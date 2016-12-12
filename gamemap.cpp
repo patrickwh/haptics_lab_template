@@ -6,11 +6,38 @@ cVector3d GameMap::getForceFeedback(cVector3d newPosition,bool buttonClicked){
 
     int xpos = currentx;
     int ypos = currenty;
+
+    cVector3d f(0,0,0);
+
+    if(blockedByCurrent){
+        if(xpos == xmax || ypos == ymax || xpos == 0 || ypos == 0)
+        {
+            blockedByCurrent = false;
+            triggeredCurrent->transferFinished = true;
+            currentx = triggeredCurrent->transferStartx;
+            currenty = triggeredCurrent->transferStarty;
+        }
+        triggeredCurrent->updatePosition(xpos,ypos);
+        if(!triggeredCurrent->transferFinished){
+            cVector3d speed = triggeredCurrent->getSpeed();
+            xspeed = cAbs(speed(0));
+            xinc = xspeed/base;
+            yspeed = cAbs(speed(1));
+            yinc = yspeed/base;
+            std::cout<<" sp "<<speed(0)<<" "<<speed(1)<<std::endl;
+            updateCurrentx(speed(0));
+            updateCurrenty(speed(1));
+        }else{
+            blockedByCurrent = false;
+            triggeredCurrent = nullptr;
+        }
+        return f;
+    }
+
     cVector3d fwave = wave->getForceFeedback(xpos,ypos,totalTime);
 
     cVector3d fcentering = -300.0f * newPosition;
     fcentering(2) = 0;
-    cVector3d f(0,0,0);
 
     // rocks
     bool isRocktriggered = false;
@@ -51,10 +78,12 @@ cVector3d GameMap::getForceFeedback(cVector3d newPosition,bool buttonClicked){
         Current* cur = citr.next();
         cVector3d fcur = cur->getForceFeedback(xpos,ypos);
         f.add(fcur);
-        if(cur->inArea){
+        if(cur->inArea1 || cur->inArea2){
             inCurrentEntrance = true;
             if(buttonClicked){
-
+                cur->transferTriggered(xpos,ypos);
+                blockedByCurrent = true;
+                triggeredCurrent = cur;
             }
         }
     }
@@ -87,7 +116,7 @@ GameMap::GameMap(){
     whirpool << new whirPool(50,50,5);
     whirpool << new whirPool(50,75,5);
     whirpool << new whirPool(75,50,5);
-    current << new Current(25,25,50,25,5);
+    current << new Current(25,25,80,80,5);
 }
 
 bool GameMap::willBeBlocked(double x,double y){
@@ -124,24 +153,40 @@ void GameMap::setYspeed(double pos){
     }
 }
 
+void GameMap::updateCurrentx(double x){
+    if(x>0){
+        currentx += xinc;
+        if(willBeBlocked(currentx,currenty)) currentx-=xinc;
+        currentx = currentx>=xmax?xmax:currentx;
+    }
+    if(x<0){
+        currentx -= xinc;
+        if(willBeBlocked(currentx,currenty)) currentx+=xinc;
+        currentx = currentx<=0?0:currentx;
+    }
+}
+
 void GameMap::updateXpos(double x){
     double xabs = cAbs(x);
     if(xabs>xthreshold){
         setXspeed(xabs);
         xpositionUpdated = true;
-        if(x>0){
-            currentx += xinc;
-            if(willBeBlocked(currentx,currenty)) currentx-=xinc;
-            currentx = currentx>=xmax?xmax:currentx;
-        }
-        if(x<0){
-            currentx -= xinc;
-            if(willBeBlocked(currentx,currenty)) currentx+=xinc;
-            currentx = currentx<=0?0:currentx;
-        }
-
+        updateCurrentx(x);
     }else{
        xpositionUpdated = false;
+    }
+}
+
+void GameMap::updateCurrenty(double y){
+    if(y>0){
+        currenty += yinc;
+        if(willBeBlocked(currentx,currenty)) currenty-=yinc;
+        currenty = currenty>=ymax?ymax:currenty;
+    }
+    if(y<0){
+        currenty -= yinc;
+        if(willBeBlocked(currentx,currenty)) currenty+=yinc;
+        currenty = currenty<=0?0:currenty;
     }
 }
 
@@ -150,16 +195,7 @@ void GameMap::updateYpos(double y){
     if(yabs>ythreshold){
         setYspeed(yabs);
         ypositionUpdated = true;
-        if(y>0){
-            currenty += yinc;
-            if(willBeBlocked(currentx,currenty)) currenty-=yinc;
-            currenty = currenty>=ymax?ymax:currenty;
-        }
-        if(y<0){
-            currenty -= yinc;
-            if(willBeBlocked(currentx,currenty)) currenty+=yinc;
-            currenty = currenty<=0?0:currenty;
-        }
+        updateCurrenty(y);
     }
     else ypositionUpdated = false;
 }

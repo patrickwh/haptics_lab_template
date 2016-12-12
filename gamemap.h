@@ -25,10 +25,12 @@ public:
     bool blocked = false;
     bool xpositionUpdated = false;
     bool ypositionUpdated = false;
+    bool blockedByCurrent = false;
 
-    cVector3d getForceFeedback(cVector3d newPosition,bool butonClicked);
+    cVector3d getForceFeedback(cVector3d newPosition,bool buttonClicked);
 
     Wave* wave;
+    Current* triggeredCurrent = nullptr;
     QList <Rock*> rock;
     QList <iceBerg*> iceberg;
     QList <whirPool*> whirpool;
@@ -38,7 +40,8 @@ public:
 
     void setXspeed(double pos);
     void setYspeed(double pos);
-
+    void updateCurrentx(double x);
+    void updateCurrenty(double y);
     void updateXpos(double x);
     void updateYpos(double y);
 
