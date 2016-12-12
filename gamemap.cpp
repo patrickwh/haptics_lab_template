@@ -46,6 +46,7 @@ cVector3d GameMap::getForceFeedback(cVector3d newPosition,bool buttonClicked){
         Rock* r = ritr.next();
         if(r->triggered){
             isRocktriggered = true;
+            blood -= r->damage;
         }
         cVector3d frock = r->getForceFeedback(xpos,ypos,totalTime,xpositionUpdated,ypositionUpdated);
         f.add(frock);
@@ -99,6 +100,8 @@ cVector3d GameMap::getForceFeedback(cVector3d newPosition,bool buttonClicked){
             speedScale = 1.0;
         }
     }
+
+    std::cout<<"blood: "<<blood<<std::endl;
 
     return f;
 }

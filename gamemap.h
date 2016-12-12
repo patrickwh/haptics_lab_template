@@ -45,7 +45,7 @@ public:
     void updateXpos(double x);
     void updateYpos(double y);
 
-    int blood = 1000;
+    double blood = 1000.0;
 
     double xstart = 0;
     double ystart = 50;
