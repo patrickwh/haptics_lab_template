@@ -133,13 +133,15 @@ void WaterGame::initialize(cWorld* world, cCamera* camera)
         double whirpoolr = xstep*w->radius;
         double x = xstep*(w->xpos-halfmax);
         double y = xstep*(w->ypos-halfmax);
-        cMaterialPtr whirpoolc = cMaterialPtr(new cMaterial());
-        whirpoolc->m_ambient.set(0.5, 0.2, 0.0);
-        whirpoolc->m_diffuse.set(1.0, 0.5, 0.0);
-        whirpoolc->m_specular.set(1.0, 1.0, 1.0);
         cShapeSphere* whirpoolsp = new cShapeSphere(whirpoolr);
+
+        whirpoolsp->m_material->m_ambient.set(0.1, 0.1, 0.6, 0.5);
+        whirpoolsp->m_material->m_diffuse.set(0.3, 0.3, 0.9, 0.5);
+        whirpoolsp->m_material->m_specular.set(1.0, 1.0, 1.0, 0.5);
+        whirpoolsp->m_material->setWhite();
+        whirpoolsp->setTransparencyLevel(0.1);
         whirpoolsp->setLocalPos(0.0,y,x);
-        whirpoolsp->m_material = whirpoolc;
+       //        whirpoolsp->m_material = whirpoolc;
         world->addChild(whirpoolsp);
     }
     // boat object
