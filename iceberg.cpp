@@ -10,7 +10,7 @@ cVector3d iceBerg::iceForce(double x, double y)
     cVector3d pos(x,y,0);
     cVector3d pos2(x,y,0);
     cVector3d proxyPos;
-    double factor = 10.0;
+    double factor = -20.0;
 
     double sgnx =cSign(x-xpos);
     double sgny = cSign(y-ypos);
@@ -24,8 +24,8 @@ cVector3d iceBerg::iceForce(double x, double y)
 //        force = pos2;
 
 
-        force(1)=sgny*factor*cAbs(y-ypos);
-        force(0) = sgnx*factor*(x-xpos);
+        force(1)=-sgny*factor*cAbs(y-ypos);
+        force(0) = sgnx*factor*cAbs(x-xpos);
         proxyPos.x(x);
         proxyPos.y(y);
 

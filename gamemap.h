@@ -8,6 +8,7 @@
 #include "rock.h"
 #include "iceberg.h"
 #include "whirpool.h"
+#include "current.h"
 
 using namespace chai3d;
 
@@ -25,12 +26,13 @@ public:
     bool xpositionUpdated = false;
     bool ypositionUpdated = false;
 
-    cVector3d getForceFeedback(int xpos,int ypos);
+    cVector3d getForceFeedback(cVector3d newPosition,bool butonClicked);
 
     Wave* wave;
     QList <Rock*> rock;
     QList <iceBerg*> iceberg;
     QList <whirPool*> whirpool;
+    QList <Current*> current;
 
     GameMap();
 

@@ -2,14 +2,18 @@
 
 
 
-cVector3d GameMap::getForceFeedback(int xpos, int ypos){
+cVector3d GameMap::getForceFeedback(cVector3d newPosition,bool buttonClicked){
 
+    int xpos = currentx;
+    int ypos = currenty;
     cVector3d fwave = wave->getForceFeedback(xpos,ypos,totalTime);
 
+    cVector3d fcentering = -300.0f * newPosition;
+    fcentering(2) = 0;
     cVector3d f(0,0,0);
 
+    // rocks
     bool isRocktriggered = false;
-
     QListIterator<Rock*> ritr(rock);
     while(ritr.hasNext()){
         Rock* r = ritr.next();
@@ -20,13 +24,19 @@ cVector3d GameMap::getForceFeedback(int xpos, int ypos){
         f.add(frock);
     }
 
-    if(isRocktriggered){
-        speedScale = 0.2;
-    }else{
-        f.add(fwave);
-        speedScale = 1.0;
+    // whirpools
+    bool iswhirpooltriggered = false;
+    QListIterator<whirPool*> witr(whirpool);
+    while(witr.hasNext()){
+        whirPool* w = witr.next();
+        if(w->triggered){
+            iswhirpooltriggered = true;
+        }
+        cVector3d fpool = w->poolForce(xpos,ypos);
+        f.add(fpool);
     }
 
+    // iecbergs
     QListIterator <iceBerg*> iitr(iceberg);
     while(iitr.hasNext()){
         iceBerg* ice = iitr.next();
@@ -34,11 +44,31 @@ cVector3d GameMap::getForceFeedback(int xpos, int ypos){
         f.add(fice);
     }
 
-    QListIterator <whirPool*> witr(whirpool);
-    while(witr.hasNext()){
-        whirPool* w = witr.next();
-        cVector3d fpool = w->poolForce(xpos,ypos);
-        f.add(fpool);
+    // currents
+    bool inCurrentEntrance = false;
+    QListIterator <Current*> citr(current);
+    while(citr.hasNext()){
+        Current* cur = citr.next();
+        cVector3d fcur = cur->getForceFeedback(xpos,ypos);
+        f.add(fcur);
+        if(cur->inArea){
+            inCurrentEntrance = true;
+            if(buttonClicked){
+
+            }
+        }
+    }
+
+    if(isRocktriggered || iswhirpooltriggered){
+        speedScale = 0.2;
+    }else{
+        if(inCurrentEntrance){
+            speedScale = 1.5;
+        }else{
+            f.add(fwave);
+            f.add(fcentering);
+            speedScale = 1.0;
+        }
     }
 
     return f;
@@ -57,6 +87,7 @@ GameMap::GameMap(){
     whirpool << new whirPool(50,50,5);
     whirpool << new whirPool(50,75,5);
     whirpool << new whirPool(75,50,5);
+    current << new Current(25,25,50,25,5);
 }
 
 bool GameMap::willBeBlocked(double x,double y){

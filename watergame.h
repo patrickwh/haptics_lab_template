@@ -64,29 +64,6 @@ void WaterGame::initialize(cWorld* world, cCamera* camera)
     //Change the background
     world->setBackgroundColor(0.2f, 0, 0.31f);
 
-//    // Create a cursor with its radius set
-//    m_cursor = new cShapeSphere(0.01);
-//    // Add cursor to the world
-//    world->addChild(m_cursor);
-
-//    // Here we define the material properties of the cursor when the
-//    // user button of the device end-effector is engaged (ON) or released (OFF)
-
-//    // A light orange material color
-//    m_matCursorButtonOFF = cMaterialPtr(new cMaterial());
-//    m_matCursorButtonOFF->m_ambient.set(0.5, 0.2, 0.0);
-//    m_matCursorButtonOFF->m_diffuse.set(1.0, 0.5, 0.0);
-//    m_matCursorButtonOFF->m_specular.set(1.0, 1.0, 1.0);
-
-//    // A blue material color
-//    // A light orange material color
-//    m_matCursorButtonON = cMaterialPtr(new cMaterial());
-//    m_matCursorButtonON->m_ambient.set(0.1, 0.1, 0.4);
-//    m_matCursorButtonON->m_diffuse.set(0.3, 0.3, 0.8);
-//    m_matCursorButtonON->m_specular.set(1.0, 1.0, 1.0);
-
-//    // Apply the 'off' material to the cursor
-//    m_cursor->m_material = m_matCursorButtonOFF;
 
     // *************************** ADD OBJECTS INTO THE WORLD******************************
     // iceberg object
@@ -99,6 +76,28 @@ void WaterGame::initialize(cWorld* world, cCamera* camera)
         cShapeSphere* icebergsp = new cShapeSphere(icesr);
         icebergsp->setLocalPos(0.0,y,x);
         world->addChild(icebergsp);
+    }
+    // current object
+    QListIterator <Current*> citr(map.current);
+    while(citr.hasNext()){
+        Current* current = citr.next();
+        double currentr = current->entranceRadius*xstep;
+        cShapeSphere* currentsp1 = new cShapeSphere(currentr);
+        double x1 = xstep*(current->x1-halfmax);
+        double y1 = xstep*(current->y1-halfmax);
+        cMaterialPtr entrancec = cMaterialPtr(new cMaterial());
+        entrancec->m_ambient.set(0.2, 0.7, 0.2);
+        entrancec->m_diffuse.set(1.0, 0.5, 0.0);
+        entrancec->m_specular.set(1.0, 1.0, 1.0);
+        currentsp1->m_material = entrancec;
+        currentsp1->setLocalPos(0.0,y1,x1);
+        // world->addChild(currentsp1);
+        cShapeSphere* currentsp2 = new cShapeSphere(currentr);
+        double x2 = xstep*(current->x2-halfmax);
+        double y2 = xstep*(current->y2-halfmax);
+        currentsp2->m_material = entrancec;
+        currentsp2->setLocalPos(0.0,y2,x2);
+        // world->addChild(currentsp2);
     }
     // rock object
     QListIterator <Rock*> ritr(map.rock);
@@ -243,9 +242,6 @@ void WaterGame::updateHaptics(cGenericHapticDevice* hapticDevice, double timeSte
 {
     cVector3d newPosition;
     hapticDevice->getPosition(newPosition);
-    cVector3d centerForce = -300.0f * newPosition;
-    // no center force on z axis
-    centerForce(2) = 0;
 
     double x = -newPosition(0);
     double y = newPosition(1);
@@ -254,8 +250,11 @@ void WaterGame::updateHaptics(cGenericHapticDevice* hapticDevice, double timeSte
     map.updateYpos(y);
 
     map.setTotalTime(totalTime);
-    cVector3d f = map.getForceFeedback(map.currentx,map.currenty);
-    f.add(centerForce);
+
+    bool buttonStatus;
+    hapticDevice->getUserSwitch(0, buttonStatus);
+
+    cVector3d f = map.getForceFeedback(newPosition,buttonStatus);
     hapticDevice->setForce(f);
 
     double xx = xstep*(map.currentx-halfmax);

@@ -13,6 +13,7 @@ public:
     double xpos = 0;
     double ypos = 0;
     double radius = 0;
+    bool triggered = false;
 //    bool willBeStuck(int x,int y);
 };
 

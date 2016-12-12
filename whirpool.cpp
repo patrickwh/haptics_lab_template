@@ -15,6 +15,7 @@ cVector3d whirPool::poolForce(double x, double y){
 
     if(dis <= radius)
     {
+        triggered = true;
         std::cout<<"In the pool!!!"<<std::endl;
         if(dis==0)
         {
@@ -27,37 +28,26 @@ cVector3d whirPool::poolForce(double x, double y){
             {
                 std::cout<<"vertical move"<<std::endl;
                 sgnx = cSign(x-xpos);
-                if((x-xpos)==0){
-                    force(0)=0;
-                }else
-                {
-                    force(0)= sgnx*factor*(radius-cAbs(x-xpos));
-                }
+                force(0)= sgnx*factor*(radius-cAbs(x-xpos));
             }else if ((x-xpos)==0)
             {
                 std::cout<<"horizon move"<<std::endl;
                 sgny = cSign(y-ypos);
-                if((y-ypos)==0)
-                {
-                    force(1)=0;
-                }else
-                {
-                    force(1) = sgny*factor*(radius-cAbs(y-ypos));
-                }
+                force(1) = -sgny*factor*(radius-cAbs(y-ypos));
             }else
             {
                 std::cout<<"Other moves"<<std::endl;
                 sgnx =cSign(x-xpos);
                 sgny = cSign(y-ypos);
                 double ratio = cAbs(x-xpos)/cAbs(y-ypos);
-                double x = sqrt((radius-dis)/(1.0+1.0/(ratio*ratio)));
+                double x = sqrt(((radius-dis)*(radius-dis))/(1.0+1.0/(ratio*ratio)));
                 double y = x/ratio;
-//                std::cout<<"In pool!"<<std::endl;
                 force(0)=sgnx*factor*x;
-                force(1)= sgny*factor*y;
+                force(1)= -sgny*factor*y;
                 std::cout<<"Force(0):!"<<force(0)<<"Force(1)"<<force(1)<<std::endl;
             }
         }
     }
+    else triggered = false;
     return force;
 }
