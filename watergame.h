@@ -1,7 +1,6 @@
 #ifndef WATERGAME_H
 #define WATERGAME_H
 
-//#include <QList>
 #include "Assignment.h"
 #include "chai3d.h"
 #include "gamemap.h"
@@ -15,8 +14,8 @@ private:
     // Material properties used to render the color of the cursors
     cMaterialPtr m_matCursorButtonON;
     cMaterialPtr m_matCursorButtonOFF;
-    void setXspeed(double pos);
-    void setYspeed(double pos);
+    void removeAllCurrentObject();
+    void addAllCurrentObject();
 
 public:
 
@@ -47,8 +46,12 @@ public:
 
     // a virtual tool representing the haptic device in the scene
     cToolCursor* tool;
-
     cShapeSphere* boat;
+    cMaterialPtr boatc;
+    cMaterialPtr boatc2;
+    cWorld* world;
+
+    QList<cShapeSphere*> curObjList;
     //**************************************************************************************
 
 };
@@ -61,9 +64,18 @@ WaterGame::WaterGame(){
 
 void WaterGame::initialize(cWorld* world, cCamera* camera)
 {
+    this->world = world;
     //Change the background
     world->setBackgroundColor(0.2f, 0, 0.31f);
 
+    boatc = cMaterialPtr(new cMaterial());
+    boatc->m_ambient.set(0.5, 0.2, 0.0);
+    boatc->m_diffuse.set(1.0, 0.5, 0.0);
+    boatc->m_specular.set(1.0, 1.0, 1.0);
+    boatc2 = cMaterialPtr(new cMaterial());
+    boatc2->m_ambient.set(0.5, 0.0, 0.5);
+    boatc2->m_diffuse.set(1.0, 0.5, 0.0);
+    boatc2->m_specular.set(1.0, 1.0, 1.0);
 
     // *************************** ADD OBJECTS INTO THE WORLD******************************
     // iceberg object
@@ -91,13 +103,15 @@ void WaterGame::initialize(cWorld* world, cCamera* camera)
         entrancec->m_specular.set(1.0, 1.0, 1.0);
         currentsp1->m_material = entrancec;
         currentsp1->setLocalPos(0.0,y1,x1);
-        world->addChild(currentsp1);
+        //world->addChild(currentsp1);
         cShapeSphere* currentsp2 = new cShapeSphere(currentr);
         double x2 = xstep*(current->x2-halfmax);
         double y2 = xstep*(current->y2-halfmax);
         currentsp2->m_material = entrancec;
         currentsp2->setLocalPos(0.0,y2,x2);
-        world->addChild(currentsp2);
+        //world->addChild(currentsp2);
+        curObjList<<currentsp1;
+        curObjList<<currentsp2;
     }
     // rock object
     QListIterator <Rock*> ritr(map.rock);
@@ -133,10 +147,6 @@ void WaterGame::initialize(cWorld* world, cCamera* camera)
     double x = xstep*(map.currentx-halfmax);
     double y = xstep*(map.currenty-halfmax);
     boat->setLocalPos(0.0,y,x);
-    cMaterialPtr boatc = cMaterialPtr(new cMaterial());
-    boatc->m_ambient.set(0.5, 0.2, 0.0);
-    boatc->m_diffuse.set(1.0, 0.5, 0.0);
-    boatc->m_specular.set(1.0, 1.0, 1.0);
     boat->m_material = boatc;
     world->addChild(boat);
 //**************************************************************************************
@@ -182,7 +192,7 @@ void WaterGame::initialize(cWorld* world, cCamera* camera)
 //    double maxStiffness = hapticDeviceInfo.m_maxLinearStiffness / workspaceScaleFactor;
 
 //    // create a mesh
-//       object3 = new cMesh();
+//       ocShapeSpherebject3 = new cMesh();
 
 //       // create plane
 //       cCreatePlane(object3, 0.3, 0.3);
@@ -236,6 +246,21 @@ void WaterGame::updateGraphics()
 
 }
 
+void WaterGame::removeAllCurrentObject(){
+    QListIterator<cShapeSphere*> coitr(curObjList);
+    while(coitr.hasNext()){
+        cShapeSphere* co = coitr.next();
+        world->removeChild(co);
+    }
+}
+
+void WaterGame::addAllCurrentObject(){
+    QListIterator<cShapeSphere*> coitr(curObjList);
+    while(coitr.hasNext()){
+        cShapeSphere* co = coitr.next();
+        world->addChild(co);
+    }
+}
 
 
 void WaterGame::updateHaptics(cGenericHapticDevice* hapticDevice, double timeStep, double totalTime)
@@ -246,15 +271,28 @@ void WaterGame::updateHaptics(cGenericHapticDevice* hapticDevice, double timeSte
     double x = -newPosition(0);
     double y = newPosition(1);
 
-    map.updateXpos(x);
-    map.updateYpos(y);
+    if(!map.blockedByCurrent){
+        map.updateXpos(x);
+        map.updateYpos(y);
+    }
 
     map.setTotalTime(totalTime);
 
-    bool buttonStatus;
-    hapticDevice->getUserSwitch(0, buttonStatus);
+    bool bs;
+    hapticDevice->getUserSwitch(0, bs);
+    bool bs2;
+    hapticDevice->getUserSwitch(1, bs2);
 
-    cVector3d f = map.getForceFeedback(newPosition,buttonStatus);
+    if(bs2)
+    {
+        boat->m_material = boatc2;
+        addAllCurrentObject();
+    }else{
+        boat->m_material = boatc2;
+        removeAllCurrentObject();
+    }
+
+    cVector3d f = map.getForceFeedback(newPosition,bs);
     hapticDevice->setForce(f);
 
     double xx = xstep*(map.currentx-halfmax);
