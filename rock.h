@@ -18,7 +18,7 @@ public:
     double ypos;
     double width;
     double height;
-    double damage = 0.1;
+    double damage = 0.07;
 
     cVector3d getForceFeedback(double x,double y, double t,bool xupdate,bool yupdate);
 

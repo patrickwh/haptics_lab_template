@@ -131,7 +131,7 @@ GameMap::GameMap(){
     double finit = 1;
     wave = new Wave(ainit,finit);
     rock << new Rock(72.5,-5,125,5);
-    rock << new Rock(27.5,-5,125,5);
+    rock << new Rock(25.5,-5,125,5);
 
     rock << new Rock(45,53.5,1.5,1); //1
     rock << new Rock(45.5,54,1,4.5); //2
@@ -148,6 +148,17 @@ GameMap::GameMap(){
     iceberg << new iceBerg(27.5,25,5);
     iceberg << new iceBerg(27.5,50,5);
     iceberg << new iceBerg(27.5,75,5);
+    // up part
+    whirpool<< new whirPool(88,10,6);
+    whirpool<< new whirPool(88,35,6);
+    whirpool<< new whirPool(88,64,6);
+    whirpool<< new whirPool(88,94,6);
+    // down part
+    whirpool<< new whirPool(12,10,6);
+    whirpool<< new whirPool(12,35,6);
+    whirpool<< new whirPool(12,64,6);
+    whirpool<< new whirPool(12,94,6);
+
 
     current << new Current(62.5,25,80,80,5);
 

@@ -99,6 +99,9 @@ void WaterGame::initialize(cWorld* world, cCamera* camera)
         cShapeSphere* exitsp = new cShapeSphere(er);
         exitsp->setLocalPos(0.0,y,x);
         world->addChild(exitsp);
+        if(exit->TYPE_FAKE_TRANSFER_TO_START==-1){
+                  exitsp->m_material->setYellowGold();
+              }
     }
     // current object
     QListIterator <Current*> citr(map.current);
