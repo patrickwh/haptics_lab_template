@@ -4,16 +4,22 @@ whirPool::whirPool(double x,double y,double r):xpos{x},ypos{y},radius{r}
 {
 
 }
-cVector3d whirPool::poolForce(double x, double y){
+cVector3d whirPool::poolForce(double x, double y,double t){
 
     cVector3d force(0,0,0);
     double factor = 50.0;
+    double f = 500;
+    double A = 5;
+    double warning =2;
     double dis = sqrt((x-xpos)*(x-xpos)+(y-ypos)*(y-ypos));
     std::cout<<"Pool dis: "<<dis<<std::endl;
     double sgnx;
     double sgny;
 
-    if(dis <= radius)
+    if (dis>radius&&dis<radius+warning){
+        force(1) = A*cSinRad(f*t);
+        force(0) = A*cSinRad(f*t);
+    }else if(dis <= radius)
     {
         triggered = true;
         std::cout<<"In the pool!!!"<<std::endl;

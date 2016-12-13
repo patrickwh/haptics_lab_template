@@ -90,7 +90,7 @@ cVector3d GameMap::getForceFeedback(cVector3d newPosition,bool buttonClicked){
             iswhirpooltriggered = true;
             blood -= w-> damage;
         }
-        cVector3d fpool = w->poolForce(xpos,ypos);
+        cVector3d fpool = w->poolForce(xpos,ypos,totalTime);
         f.add(fpool);
     }
 
@@ -101,7 +101,7 @@ cVector3d GameMap::getForceFeedback(cVector3d newPosition,bool buttonClicked){
         if(ice->triggered){
             blood -= ice -> damage;
         }
-        cVector3d fice = ice->iceForce(xpos,ypos);
+        cVector3d fice = ice->iceForce(xpos,ypos,totalTime);
         f.add(fice);
     }
 

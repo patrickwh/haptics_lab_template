@@ -8,7 +8,7 @@ class iceBerg
 {
 public:
     iceBerg(double x,double y,double r);
-    cVector3d iceForce(double x,double y);
+    cVector3d iceForce(double x,double y,double t);
     bool triggered = false;
 public:
     double xpos =0;

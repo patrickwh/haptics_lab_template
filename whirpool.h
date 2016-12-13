@@ -7,7 +7,7 @@ class whirPool
 {
 public:
     whirPool(double x, double y, double r);
-    cVector3d poolForce(double x,double y);
+    cVector3d poolForce(double x,double y,double t);
 //    bool istriggered = false;
 public:
     double xpos = 0;
