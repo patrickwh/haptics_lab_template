@@ -59,6 +59,7 @@ cVector3d GameMap::getForceFeedback(cVector3d newPosition,bool buttonClicked){
         whirPool* w = witr.next();
         if(w->triggered){
             iswhirpooltriggered = true;
+            blood -= w-> damage;
         }
         cVector3d fpool = w->poolForce(xpos,ypos);
         f.add(fpool);
@@ -68,6 +69,9 @@ cVector3d GameMap::getForceFeedback(cVector3d newPosition,bool buttonClicked){
     QListIterator <iceBerg*> iitr(iceberg);
     while(iitr.hasNext()){
         iceBerg* ice = iitr.next();
+        if(ice->triggered){
+            blood -= ice -> damage;
+        }
         cVector3d fice = ice->iceForce(xpos,ypos);
         f.add(fice);
     }
@@ -114,11 +118,21 @@ GameMap::GameMap(){
     int ainit = 10;
     double finit = 1;
     wave = new Wave(ainit,finit);
-    rock << new Rock(5,25,50,5);
-    iceberg << new iceBerg(25,50,10);
-    whirpool << new whirPool(50,50,5);
-    whirpool << new whirPool(50,75,5);
-    whirpool << new whirPool(75,50,5);
+    rock << new Rock(72.5,-5,125,5);
+    rock << new Rock(27.5,-5,125,5);
+    iceberg << new iceBerg(75,25,5);
+    iceberg << new iceBerg(75,50,5);
+    iceberg << new iceBerg(75,75,5);
+    iceberg << new iceBerg(27.5,25,5);
+    iceberg << new iceBerg(27.5,50,5);
+    iceberg << new iceBerg(27.5,75,5);
+
+//    rock << new Rock(5,25,50,5);
+
+//    iceberg << new iceBerg(25,50,10);
+//    whirpool << new whirPool(50,50,5);
+//    whirpool << new whirPool(50,75,5);
+//    whirpool << new whirPool(75,50,15);
     current << new Current(25,25,80,80,5);
 }
 

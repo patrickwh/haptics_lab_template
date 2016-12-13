@@ -15,6 +15,7 @@ public:
     double ypos = 0;
     double radius =0;
     bool willBeBlocked(double x,double y);
+    double damage = 0.009;
 };
 
 #endif // ICEBERG_H

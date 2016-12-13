@@ -149,7 +149,12 @@ void WaterGame::initialize(cWorld* world, cCamera* camera)
     double x = xstep*(map.currentx-halfmax);
     double y = xstep*(map.currenty-halfmax);
     boat->setLocalPos(0.0,y,x);
-    boat->m_material = boatc;
+
+//    boat->m_material->setColorf(1,0,0,10);
+    boat->m_material->setGreenLime();
+    boat->setTransparencyLevel(1);
+
+//    boat->m_material = boatc;
     world->addChild(boat);
 //**************************************************************************************
 //    //--------------------------------------------------------------------------
@@ -292,6 +297,23 @@ void WaterGame::updateHaptics(cGenericHapticDevice* hapticDevice, double timeSte
     }else{
         boat->m_material = boatc2;
         removeAllCurrentObject();
+    }
+    double bloodLevl = map.bloodMax/5.0;
+    double bloodGreen = map.bloodMax-bloodLevl;
+    double bloodBlue = map.bloodMax-2*bloodLevl;
+    double bloodYellow = map.bloodMax-3*bloodLevl;
+    double bloodOrange = map.bloodMax-4*bloodLevl;
+    double bloodRed = map.bloodMax-5*bloodLevl;
+    if (map.blood>=bloodGreen){
+        boat->m_material->setColorf(0,1,0);
+    }else if (map.blood<bloodGreen&&map.blood>=bloodBlue){
+        boat->m_material->setColorf(0,0,1);
+    }else if (map.blood<bloodBlue&&map.blood>=bloodYellow){
+        boat->m_material->setColorf(1,1,0);
+    }else if (map.blood<bloodYellow&&map.blood>=bloodOrange){
+        boat->m_material->setColorf(1,0.5,0);
+    }else{
+        boat->m_material->setColorf(1,0,0);
     }
 
     cVector3d f = map.getForceFeedback(newPosition,bs);

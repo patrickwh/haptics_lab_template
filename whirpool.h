@@ -14,6 +14,7 @@ public:
     double ypos = 0;
     double radius = 0;
     bool triggered = false;
+    double damage = 0.005;
 //    bool willBeStuck(int x,int y);
 };
 
