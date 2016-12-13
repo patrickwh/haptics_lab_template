@@ -13,7 +13,7 @@ public:
     double ammount;
     double xpos;
     double ypos;
-    double radius;
+    double radius = 3.0;
     bool valid = true;
     bool triggered = false;
 };

@@ -9,6 +9,18 @@ cVector3d GameMap::getForceFeedback(cVector3d newPosition,bool buttonClicked){
 
     cVector3d f(0,0,0);
 
+    // bonus points
+    QListIterator<BonusPoint*> bitr(bonus);
+    while(bitr.hasNext()){
+        BonusPoint* bp = bitr.next();
+        bp->updateState(xpos,ypos);
+        if(bp->triggered && bp->valid){
+            blood += bp->ammount;
+            bp->valid = false;
+            bp->triggered = false;
+        }
+    }
+
     if(blockedByCurrent){
         if(xpos == xmax || ypos == ymax || xpos == 0 || ypos == 0)
         {
@@ -253,10 +265,11 @@ void GameMap::updateYpos(double y){
 }
 
 void GameMap::generateRandomBouns(int num){
+    srand(time(NULL));
     for(int i=0;i<num;i++){
         double x = double (rand()%int(xmax));
         double y = double (rand()%int(xmax));
-        double a = rand()%400+100;
+        double a = rand()%50+100;
         BonusPoint* bp = new BonusPoint(x,y,a);
         bonus<<bp;
     }

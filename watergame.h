@@ -16,6 +16,7 @@ private:
     cMaterialPtr m_matCursorButtonOFF;
     void removeAllCurrentObject();
     void addAllCurrentObject();
+    void updateBonuspoints();
 
 public:
 
@@ -90,6 +91,7 @@ void WaterGame::initialize(cWorld* world, cCamera* camera)
         icebergsp->setLocalPos(0.0,y,x);
         world->addChild(icebergsp);
     } 
+    // bonus object
     QListIterator <BonusPoint*> bitr(map.bonus);
     while(bitr.hasNext()){
         BonusPoint* bp = bitr.next();
@@ -206,6 +208,38 @@ void WaterGame::addAllCurrentObject(){
     }
 }
 
+void WaterGame::updateBonuspoints(){
+    int updateFrequency = 15;
+    QListIterator<BonusPoint*> bitr(map.bonus);
+    QList<int> deleteList;
+    int id = 0;
+    while(bitr.hasNext()){
+        BonusPoint* bp = bitr.next();
+        if(bp->valid == false){
+            cShapeSphere* bpsp = bonusObjList[id];
+            world->removeChild(bpsp);
+            bonusObjList.removeOne(bpsp);
+            deleteList<<id;
+        }else{
+            int choise = rand()%(1000*updateFrequency);
+            if(choise == 0){
+                double newx = rand()%int(map.xmax);
+                double newy = rand()%int(map.xmax);
+                bp->xpos = newx;
+                bp->ypos = newy;
+                double x = xstep*(bp->xpos-halfmax);
+                double y = xstep*(bp->ypos-halfmax);
+                bonusObjList[id]->setLocalPos(0.0,y,x);
+                }
+        }
+        id++;
+    }
+    QListIterator<int> itr(deleteList);
+    while(itr.hasNext()){
+        map.bonus.removeAt(itr.next());
+    }
+}
+
 
 void WaterGame::updateHaptics(cGenericHapticDevice* hapticDevice, double timeStep, double totalTime)
 {
@@ -221,6 +255,8 @@ void WaterGame::updateHaptics(cGenericHapticDevice* hapticDevice, double timeSte
     }
 
     map.setTotalTime(totalTime);
+
+    updateBonuspoints();
 
     bool bs;
     hapticDevice->getUserSwitch(0, bs);
