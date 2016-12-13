@@ -59,7 +59,7 @@ public:
 WaterGame::WaterGame(){
     map = GameMap();
     xstep = totallen/map.xmax;
-    halfmax = map.xmax/2;
+    halfmax = map.xmax/2.0;
 }
 
 void WaterGame::initialize(cWorld* world, cCamera* camera)
@@ -117,12 +117,12 @@ void WaterGame::initialize(cWorld* world, cCamera* camera)
     QListIterator <Rock*> ritr(map.rock);
     while(ritr.hasNext()){
         Rock* r = ritr.next();
-        double xsz = 0.0001;
+        double xsz = 0.0;
         double ysz = xstep*r->width;
         double zsz = xstep*r->height;
         cShapeBox* rockbx = new cShapeBox(xsz,ysz,zsz);
-        double x = xstep*(r->xpos-halfmax+r->height/2);
-        double y = xstep*(r->ypos-halfmax+r->width/2);
+        double x = xstep*(r->xpos-halfmax+r->height/2.0);
+        double y = xstep*(r->ypos-halfmax+r->width/2.0);
         rockbx->setLocalPos(0.0,y,x);
         world->addChild(rockbx);
     }

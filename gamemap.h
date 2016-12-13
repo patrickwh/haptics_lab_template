@@ -18,10 +18,10 @@ public:
 
     double totalTime;
 
-    int xmax = 100;
-    int ymax = 100;
-    int destx = 99;
-    int desty = 99;
+    double xmax = 100;
+    double ymax = 100;
+    double destx = 99;
+    double desty = 99;
     bool blocked = false;
     bool xpositionUpdated = false;
     bool ypositionUpdated = false;
@@ -48,7 +48,7 @@ public:
     double bloodMax = 1000.0;
     double blood = bloodMax;
 
-    double xstart = 0;
+    double xstart = 50;
     double ystart = 50;
     double currentx = xstart;
     double currenty = ystart;

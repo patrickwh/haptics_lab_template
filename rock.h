@@ -11,13 +11,13 @@ private:
     bool enabled = true;
     void setEnabled(bool v);
 public:
-    Rock(int x,int y,int w,int h);
+    Rock(double x,double y,double w,double h);
 
     bool triggered = false;
-    int xpos;
-    int ypos;
-    int width;
-    int height;
+    double xpos;
+    double ypos;
+    double width;
+    double height;
     double damage = 0.1;
 
     cVector3d getForceFeedback(double x,double y, double t,bool xupdate,bool yupdate);

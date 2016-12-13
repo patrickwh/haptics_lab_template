@@ -120,19 +120,22 @@ GameMap::GameMap(){
     wave = new Wave(ainit,finit);
     rock << new Rock(72.5,-5,125,5);
     rock << new Rock(27.5,-5,125,5);
+
+    rock << new Rock(45,53.5,1.5,1); //1
+    rock << new Rock(45.5,54,1,4.5); //2
+    rock << new Rock(53.5,54,1,1.5); //3
+    rock << new Rock(54,49.5,4.5,1); //4
+    rock << new Rock(54,45,1.5,1); //5
+    rock << new Rock(49.5,45,1,4.5); //6
+    rock << new Rock(45,45,1,1.5); //7
+    rock << new Rock(45,46,4.5,1); //8
+
     iceberg << new iceBerg(75,25,5);
     iceberg << new iceBerg(75,50,5);
     iceberg << new iceBerg(75,75,5);
     iceberg << new iceBerg(27.5,25,5);
     iceberg << new iceBerg(27.5,50,5);
     iceberg << new iceBerg(27.5,75,5);
-
-//    rock << new Rock(5,25,50,5);
-
-//    iceberg << new iceBerg(25,50,10);
-//    whirpool << new whirPool(50,50,5);
-//    whirpool << new whirPool(50,75,5);
-//    whirpool << new whirPool(75,50,15);
     current << new Current(25,25,80,80,5);
 }
 
@@ -153,6 +156,12 @@ bool GameMap::willBeBlocked(double x,double y){
 void GameMap::setXspeed(double pos){
     if(pos<=xthreshold){
         xspeed = 0;
+        //    rock << new Rock(5,25,50,5);
+
+        //    iceberg << new iceBerg(25,50,10);
+        //    whirpool << new whirPool(50,50,5);
+        //    whirpool << new whirPool(50,75,5);
+        //    whirpool << new whirPool(75,50,15);
         xinc = 0;
     }else{
         xspeed = speedScale*(pos-xthreshold)/xstep;

@@ -1,6 +1,6 @@
 #include "rock.h"
 
-Rock::Rock(int x,int y,int w,int h):xpos{x},ypos{y},width{w},height{h}
+Rock::Rock(double x,double y,double w,double h):xpos{x},ypos{y},width{w},height{h}
 {
 
 }
@@ -15,7 +15,7 @@ cVector3d Rock::getForceFeedback(double x,double y,double t,bool xupdate,bool yu
     double f = 100;
 
     if(enabled){
-        if(x > xpos && x< xpos+height && y> ypos && y< ypos+width)
+        if(x >= xpos && x <= (xpos+height) && y >= ypos && y<= (ypos+width))
         {
             triggered = true;
             if(xupdate || yupdate) force(2) = A*cSinRad(f*t);
