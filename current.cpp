@@ -1,6 +1,6 @@
 #include "current.h"
 
-Current::Current(double x1,double y1,double x2,double y2,double r):x1{x1},x2{x2},y1{y1},y2{y2},entranceRadius{r}
+Current::Current(double x1,double y1,double x2,double y2,double r,bool f):x1{x1},x2{x2},y1{y1},y2{y2},entranceRadius{r},forcedToTransfer{f}
 {
 
 }

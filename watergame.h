@@ -52,6 +52,7 @@ public:
     cWorld* world;
 
     QList<cShapeSphere*> curObjList;
+    QList<cShapeSphere*> bonusObjList;
     //**************************************************************************************
 
 };
@@ -88,6 +89,17 @@ void WaterGame::initialize(cWorld* world, cCamera* camera)
         cShapeSphere* icebergsp = new cShapeSphere(icesr);
         icebergsp->setLocalPos(0.0,y,x);
         world->addChild(icebergsp);
+    } 
+    QListIterator <BonusPoint*> bitr(map.bonus);
+    while(bitr.hasNext()){
+        BonusPoint* bp = bitr.next();
+        double br = 0.001;
+        double x = xstep*(bp->xpos-halfmax);
+        double y = xstep*(bp->ypos-halfmax);
+        cShapeSphere* bpsp = new cShapeSphere(br);
+        bpsp->setLocalPos(0.0,y,x);
+        world->addChild(bpsp);
+        bonusObjList<<bpsp;
     }
     // exit object
     QListIterator <Exit*> eitr(map.exit);
@@ -170,95 +182,6 @@ void WaterGame::initialize(cWorld* world, cCamera* camera)
 
 //    boat->m_material = boatc;
     world->addChild(boat);
-//**************************************************************************************
-//    //--------------------------------------------------------------------------
-//    // HAPTIC DEVICES / TOOLS
-//    //--------------------------------------------------------------------------
-
-//    // create a haptic device handler
-//    handler = new cHapticDeviceHandler();
-
-//    // get access to the first available haptic device
-//    handler->getDevice(hapticDevice, 0);
-
-//    // retrieve information about the current haptic device
-//    cHapticDeviceInfo hapticDeviceInfo = hapticDevice->getSpecifications();
-
-//    // create a 3D tool and add it to the world
-//    tool = new cToolCursor(world);
-//    camera->addChild(tool);
-
-//    // position tool in respect to camera
-//    tool->setLocalPos(-1.0, 0.0, 0.0);
-
-//    // connect the haptic device to the tool
-//    tool->setHapticDevice(hapticDevice);
-
-//    // set radius of tool
-//    double toolRadius = 0.01;
-
-//    // define a radius for the tool
-//    tool->setRadius(toolRadius);
-
-//    // map the physical workspace of the haptic device to a larger virtual workspace.
-//    tool->setWorkspaceRadius(1.0);
-
-//    // start the haptic tool
-//    tool->start();
-
-//    double workspaceScaleFactor = tool->getWorkspaceScaleFactor();
-
-//    // properties
-
-//    double maxStiffness = hapticDeviceInfo.m_maxLinearStiffness / workspaceScaleFactor;
-
-//    // create a mesh
-//       ocShapeSpherebject3 = new cMesh();
-
-//       // create plane
-//       cCreatePlane(object3, 0.3, 0.3);
-
-//       // create collision detector
-//       object3->createAABBCollisionDetector(toolRadius);
-
-//       // add object to world
-//       world->addChild(object3);
-
-//       // set the position of the object
-//       object3->setLocalPos(-0.2, 0.2, 0.0);
-
-//       // set graphic properties
-//       object3->m_texture = cTexture2d::create();
-//       bool fileload = object3->m_texture->loadFromFile("images.jpg");
-//       if (!fileload)
-//       {
-//           #if defined(_MSVC)
-//           fileload = object3->m_texture->loadFromFile("../../../bin/resources/images/blackstone.jpg");
-//           #endif
-//       }
-//       if (!fileload)
-//       {
-//           std::cout << "Error - Texture image failed to load correctly." << std::endl;
-//           // close();
-//       }
-
-//       // enable texture mapping
-//       object3->setUseTexture(true);
-//       object3->m_material->setWhite();
-
-//       // create normal map from texture data
-//       cNormalMapPtr normalMap3 = cNormalMap::create();
-//       normalMap3->createMap(object3->m_texture);
-//       object3->m_normalMap = normalMap3;
-//       normalMap3->setTextureUnit(GL_TEXTURE0_ARB);
-
-//       // set haptic properties
-//       object3->m_material->setStiffness(0.7 * maxStiffness);
-//       object3->m_material->setStaticFriction(0.4);
-//       object3->m_material->setDynamicFriction(0.3);
-//       object3->m_material->setTextureLevel(0.5);
-//       object3->m_material->setHapticTriangleSides(true, false);
-//**************************************************************************************
 
 }
 
