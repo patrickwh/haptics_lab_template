@@ -16,7 +16,8 @@ SOURCES += Main.cpp \
     rock.cpp \
     iceberg.cpp \
     whirpool.cpp \
-    current.cpp
+    current.cpp \
+    exit.cpp
 HEADERS += 1_HelloWorld.h 4_HapticWall.h Assignment.h 2_ReadDevicePosition.h 5_MagneticEffect.h 3_BasicForceEffects.h 6_HapticSphere.h \
     watergame.h \
     gamemap.h \
@@ -24,7 +25,8 @@ HEADERS += 1_HelloWorld.h 4_HapticWall.h Assignment.h 2_ReadDevicePosition.h 5_M
     rock.h \
     iceberg.h \
     whirpool.h \
-    current.h
+    current.h \
+    exit.h
 
 
 INCLUDEPATH += $$PWD/../chai3d-3.0.0/src

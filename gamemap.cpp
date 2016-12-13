@@ -34,6 +34,18 @@ cVector3d GameMap::getForceFeedback(cVector3d newPosition,bool buttonClicked){
         return f;
     }
 
+    // exits
+    QListIterator<Exit*> eitr(exit);
+    while(eitr.hasNext()){
+        Exit* e = eitr.next();
+        e->updateState(xpos,ypos);
+        if(e->state == Exit::STATE_BACK_TO_START){
+            currentx = xstart;
+            currenty = ystart;
+            e->state = Exit::STATE_GAME_UNGOING;
+        }
+    }
+
     cVector3d fwave = wave->getForceFeedback(xpos,ypos,totalTime);
 
     cVector3d fcentering = -300.0f * newPosition;
@@ -136,7 +148,13 @@ GameMap::GameMap(){
     iceberg << new iceBerg(27.5,25,5);
     iceberg << new iceBerg(27.5,50,5);
     iceberg << new iceBerg(27.5,75,5);
+
     current << new Current(25,25,80,80,5);
+
+    exit<< new Exit(50.0,0.0,Exit::TYPE_FAKE_TRANSFER_TO_START);
+    exit<< new Exit(50.0,100.0,Exit::TYPE_FAKE_TRANSFER_TO_START);
+    exit<< new Exit(0.0,50.0,Exit::TYPE_REAL);
+    exit<< new Exit(100.0,50.0,Exit::TYPE_REAL);
 }
 
 bool GameMap::willBeBlocked(double x,double y){
@@ -156,12 +174,6 @@ bool GameMap::willBeBlocked(double x,double y){
 void GameMap::setXspeed(double pos){
     if(pos<=xthreshold){
         xspeed = 0;
-        //    rock << new Rock(5,25,50,5);
-
-        //    iceberg << new iceBerg(25,50,10);
-        //    whirpool << new whirPool(50,50,5);
-        //    whirpool << new whirPool(50,75,5);
-        //    whirpool << new whirPool(75,50,15);
         xinc = 0;
     }else{
         xspeed = speedScale*(pos-xthreshold)/xstep;

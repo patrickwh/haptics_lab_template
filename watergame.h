@@ -89,6 +89,17 @@ void WaterGame::initialize(cWorld* world, cCamera* camera)
         icebergsp->setLocalPos(0.0,y,x);
         world->addChild(icebergsp);
     }
+    // exit object
+    QListIterator <Exit*> eitr(map.exit);
+    while(eitr.hasNext()){
+        Exit* exit = eitr.next();
+        double er = xstep*exit->radius;
+        double x = xstep*(exit->xpos-halfmax);
+        double y = xstep*(exit->ypos-halfmax);
+        cShapeSphere* exitsp = new cShapeSphere(er);
+        exitsp->setLocalPos(0.0,y,x);
+        world->addChild(exitsp);
+    }
     // current object
     QListIterator <Current*> citr(map.current);
     while(citr.hasNext()){

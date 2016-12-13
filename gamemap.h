@@ -9,6 +9,7 @@
 #include "iceberg.h"
 #include "whirpool.h"
 #include "current.h"
+#include "exit.h"
 
 using namespace chai3d;
 
@@ -35,6 +36,7 @@ public:
     QList <iceBerg*> iceberg;
     QList <whirPool*> whirpool;
     QList <Current*> current;
+    QList <Exit*> exit;
 
     GameMap();
 
