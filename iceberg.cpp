@@ -34,7 +34,6 @@ cVector3d iceBerg::iceForce(double x, double y)
 
 bool iceBerg::willBeBlocked(double x,double y){
     double dis = sqrt((x-xpos)*(x-xpos)+(y-ypos)*(y-ypos));
-    std::cout<<"Dis with iceberg :"<<dis<<std::endl;
     if(dis <= radius) triggered = true;
     else triggered = false;
     return triggered;

@@ -46,6 +46,23 @@ cVector3d GameMap::getForceFeedback(cVector3d newPosition,bool buttonClicked){
         }
     }
 
+    // currents
+    bool inCurrentEntrance = false;
+    QListIterator <Current*> citr(current);
+    while(citr.hasNext()){
+        Current* cur = citr.next();
+        cVector3d fcur = cur->getForceFeedback(xpos,ypos);
+        f.add(fcur);
+        if(cur->inArea1 || cur->inArea2){
+            inCurrentEntrance = true;
+            if(buttonClicked){
+                cur->transferTriggered(xpos,ypos);
+                blockedByCurrent = true;
+                triggeredCurrent = cur;
+            }
+        }
+    }
+
     cVector3d fwave = wave->getForceFeedback(xpos,ypos,totalTime);
 
     cVector3d fcentering = -300.0f * newPosition;
@@ -86,23 +103,6 @@ cVector3d GameMap::getForceFeedback(cVector3d newPosition,bool buttonClicked){
         }
         cVector3d fice = ice->iceForce(xpos,ypos);
         f.add(fice);
-    }
-
-    // currents
-    bool inCurrentEntrance = false;
-    QListIterator <Current*> citr(current);
-    while(citr.hasNext()){
-        Current* cur = citr.next();
-        cVector3d fcur = cur->getForceFeedback(xpos,ypos);
-        f.add(fcur);
-        if(cur->inArea1 || cur->inArea2){
-            inCurrentEntrance = true;
-            if(buttonClicked){
-                cur->transferTriggered(xpos,ypos);
-                blockedByCurrent = true;
-                triggeredCurrent = cur;
-            }
-        }
     }
 
     if(isRocktriggered || iswhirpooltriggered){
@@ -149,7 +149,7 @@ GameMap::GameMap(){
     iceberg << new iceBerg(27.5,50,5);
     iceberg << new iceBerg(27.5,75,5);
 
-    current << new Current(25,25,80,80,5);
+    current << new Current(62.5,25,80,80,5);
 
     exit<< new Exit(50.0,0.0,Exit::TYPE_FAKE_TRANSFER_TO_START);
     exit<< new Exit(50.0,100.0,Exit::TYPE_FAKE_TRANSFER_TO_START);
@@ -158,6 +158,7 @@ GameMap::GameMap(){
 }
 
 bool GameMap::willBeBlocked(double x,double y){
+    if(blockedByCurrent) return false;
     bool blocked = false;
     QListIterator<iceBerg*> itr(iceberg);
     while(itr.hasNext()){
