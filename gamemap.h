@@ -3,6 +3,7 @@
 
 #include <QList>
 #include <QListIterator>
+#include <stdlib.h>
 #include "chai3d.h"
 #include "wave.h"
 #include "rock.h"
@@ -10,6 +11,7 @@
 #include "whirpool.h"
 #include "current.h"
 #include "exit.h"
+#include "bonuspoint.h"
 
 using namespace chai3d;
 
@@ -37,6 +39,7 @@ public:
     QList <whirPool*> whirpool;
     QList <Current*> current;
     QList <Exit*> exit;
+    QList <BonusPoint*> bonus;
 
     GameMap();
 
@@ -45,7 +48,9 @@ public:
     void updateCurrentx(double x);
     void updateCurrenty(double y);
     void updateXpos(double x);
-    void updateYpos(double y);
+    void updateYpos(double y);    
+    void setTotalTime(double t);
+    void generateRandomBouns(int num);
 
     double bloodMax = 1000.0;
     double blood = bloodMax;
@@ -71,7 +76,6 @@ public:
     double base = 250.0;
     double speedScale = 1.0;
 
-    void setTotalTime(double t);
     bool willBeBlocked(double x,double y);
 };
 

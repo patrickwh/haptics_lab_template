@@ -7,7 +7,7 @@ using namespace chai3d;
 class Current
 {
 public:
-    Current(double x1,double y1,double x2,double y2,double r);
+    Current(double x1,double y1,double x2,double y2,double r,bool f=false);
     cVector3d getForceFeedback(double x,double y);
     cVector3d updatePosition(double x,double y);
     cVector3d getSpeed();
@@ -23,6 +23,7 @@ public:
     bool inArea2 = false;
     bool triggered = false;
     bool transferFinished = true;
+    bool forcedToTransfer = false;
 };
 
 #endif // CURRENT_H
