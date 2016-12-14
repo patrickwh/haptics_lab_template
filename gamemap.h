@@ -29,6 +29,7 @@ public:
     bool xpositionUpdated = false;
     bool ypositionUpdated = false;
     bool blockedByCurrent = false;
+    bool gameOver = false;
 
     cVector3d getForceFeedback(cVector3d newPosition,bool buttonClicked);
 

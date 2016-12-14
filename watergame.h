@@ -17,6 +17,7 @@ private:
     void removeAllCurrentObject();
     void addAllCurrentObject();
     void updateBonuspoints();
+    void initialBonuspoints();
 
 public:
 
@@ -29,7 +30,7 @@ public:
 
     // my methods and attributes
 
-    GameMap map;
+    GameMap* map;
     WaterGame();
 
     double totallen = 0.0765*2;
@@ -59,9 +60,9 @@ public:
 };
 
 WaterGame::WaterGame(){
-    map = GameMap();
-    xstep = totallen/map.xmax;
-    halfmax = map.xmax/2.0;
+    map = new GameMap();
+    xstep = totallen/map->xmax;
+    halfmax = map->xmax/2.0;
 }
 
 void WaterGame::initialize(cWorld* world, cCamera* camera)
@@ -81,7 +82,7 @@ void WaterGame::initialize(cWorld* world, cCamera* camera)
 
     // *************************** ADD OBJECTS INTO THE WORLD******************************
     // iceberg object
-    QListIterator <iceBerg*> iitr(map.iceberg);
+    QListIterator <iceBerg*> iitr(map->iceberg);
     while(iitr.hasNext()){
         iceBerg* ice = iitr.next();
         double icesr = xstep*ice->radius;
@@ -92,19 +93,10 @@ void WaterGame::initialize(cWorld* world, cCamera* camera)
         world->addChild(icebergsp);
     } 
     // bonus object
-    QListIterator <BonusPoint*> bitr(map.bonus);
-    while(bitr.hasNext()){
-        BonusPoint* bp = bitr.next();
-        double br = 0.001;
-        double x = xstep*(bp->xpos-halfmax);
-        double y = xstep*(bp->ypos-halfmax);
-        cShapeSphere* bpsp = new cShapeSphere(br);
-        bpsp->setLocalPos(0.0,y,x);
-        world->addChild(bpsp);
-        bonusObjList<<bpsp;
-    }
+    initialBonuspoints();
+
     // exit object
-    QListIterator <Exit*> eitr(map.exit);
+    QListIterator <Exit*> eitr(map->exit);
     while(eitr.hasNext()){
         Exit* exit = eitr.next();
         double er = xstep*exit->radius;
@@ -118,7 +110,7 @@ void WaterGame::initialize(cWorld* world, cCamera* camera)
               }
     }
     // current object
-    QListIterator <Current*> citr(map.current);
+    QListIterator <Current*> citr(map->current);
     while(citr.hasNext()){
         Current* current = citr.next();
         double currentr = current->entranceRadius*xstep;
@@ -142,7 +134,7 @@ void WaterGame::initialize(cWorld* world, cCamera* camera)
         curObjList<<currentsp2;
     }
     // rock object
-    QListIterator <Rock*> ritr(map.rock);
+    QListIterator <Rock*> ritr(map->rock);
     while(ritr.hasNext()){
         Rock* r = ritr.next();
         double xsz = 0.0;
@@ -155,7 +147,7 @@ void WaterGame::initialize(cWorld* world, cCamera* camera)
         world->addChild(rockbx);
     }
     // whirpool object
-    QListIterator <whirPool*> witr(map.whirpool);
+    QListIterator <whirPool*> witr(map->whirpool);
     while(witr.hasNext()){
         whirPool* w = witr.next();
         double whirpoolr = xstep*w->radius;
@@ -174,8 +166,8 @@ void WaterGame::initialize(cWorld* world, cCamera* camera)
     }
     // boat object
     boat = new cShapeSphere(0.002);
-    double x = xstep*(map.currentx-halfmax);
-    double y = xstep*(map.currenty-halfmax);
+    double x = xstep*(map->currentx-halfmax);
+    double y = xstep*(map->currenty-halfmax);
     boat->setLocalPos(0.0,y,x);
 
 //    boat->m_material->setColorf(1,0,0,10);
@@ -190,6 +182,27 @@ void WaterGame::initialize(cWorld* world, cCamera* camera)
 void WaterGame::updateGraphics()
 {
 
+}
+
+void WaterGame::initialBonuspoints(){
+    QListIterator<cShapeSphere*> boitr(bonusObjList);
+    while(boitr.hasNext()){
+        cShapeSphere* bpsp = boitr.next();
+        world->removeChild(bpsp);
+        delete bpsp;
+    }
+    bonusObjList.clear();
+    QListIterator <BonusPoint*> bitr(map->bonus);
+    while(bitr.hasNext()){
+        BonusPoint* bp = bitr.next();
+        double br = 0.001;
+        double x = xstep*(bp->xpos-halfmax);
+        double y = xstep*(bp->ypos-halfmax);
+        cShapeSphere* bpsp = new cShapeSphere(br);
+        bpsp->setLocalPos(0.0,y,x);
+        world->addChild(bpsp);
+        bonusObjList<<bpsp;
+    }
 }
 
 void WaterGame::removeAllCurrentObject(){
@@ -210,7 +223,7 @@ void WaterGame::addAllCurrentObject(){
 
 void WaterGame::updateBonuspoints(){
     int updateFrequency = 15;
-    QListIterator<BonusPoint*> bitr(map.bonus);
+    QListIterator<BonusPoint*> bitr(map->bonus);
     QList<int> deleteList;
     int id = 0;
     while(bitr.hasNext()){
@@ -220,23 +233,24 @@ void WaterGame::updateBonuspoints(){
             world->removeChild(bpsp);
             bonusObjList.removeOne(bpsp);
             deleteList<<id;
+            delete bpsp;
         }else{
             int choise = rand()%(1000*updateFrequency);
             if(choise == 0){
-                double newx = rand()%int(map.xmax);
-                double newy = rand()%int(map.xmax);
+                double newx = rand()%int(map->xmax);
+                double newy = rand()%int(map->xmax);
                 bp->xpos = newx;
                 bp->ypos = newy;
                 double x = xstep*(bp->xpos-halfmax);
                 double y = xstep*(bp->ypos-halfmax);
                 bonusObjList[id]->setLocalPos(0.0,y,x);
-                }
+            }
         }
         id++;
     }
     QListIterator<int> itr(deleteList);
     while(itr.hasNext()){
-        map.bonus.removeAt(itr.next());
+        map->bonus.removeAt(itr.next());
     }
 }
 
@@ -249,12 +263,18 @@ void WaterGame::updateHaptics(cGenericHapticDevice* hapticDevice, double timeSte
     double x = -newPosition(0);
     double y = newPosition(1);
 
-    if(!map.blockedByCurrent){
-        map.updateXpos(x);
-        map.updateYpos(y);
+    if(!map->blockedByCurrent){
+        map->updateXpos(x);
+        map->updateYpos(y);
     }
 
-    map.setTotalTime(totalTime);
+    if(map->gameOver){
+        delete map;
+        map = new GameMap();
+        initialBonuspoints();
+    }
+
+    map->setTotalTime(totalTime);
 
     updateBonuspoints();
 
@@ -271,29 +291,29 @@ void WaterGame::updateHaptics(cGenericHapticDevice* hapticDevice, double timeSte
         boat->m_material = boatc2;
         removeAllCurrentObject();
     }
-    double bloodLevl = map.bloodMax/5.0;
-    double bloodGreen = map.bloodMax-bloodLevl;
-    double bloodBlue = map.bloodMax-2*bloodLevl;
-    double bloodYellow = map.bloodMax-3*bloodLevl;
-    double bloodOrange = map.bloodMax-4*bloodLevl;
-    double bloodRed = map.bloodMax-5*bloodLevl;
-    if (map.blood>=bloodGreen){
+    double bloodLevl = map->bloodMax/5.0;
+    double bloodGreen = map->bloodMax-bloodLevl;
+    double bloodBlue = map->bloodMax-2*bloodLevl;
+    double bloodYellow = map->bloodMax-3*bloodLevl;
+    double bloodOrange = map->bloodMax-4*bloodLevl;
+    double bloodRed = map->bloodMax-5*bloodLevl;
+    if (map->blood>=bloodGreen){
         boat->m_material->setColorf(0,1,0);
-    }else if (map.blood<bloodGreen&&map.blood>=bloodBlue){
+    }else if (map->blood<bloodGreen&&map->blood>=bloodBlue){
         boat->m_material->setColorf(0,0,1);
-    }else if (map.blood<bloodBlue&&map.blood>=bloodYellow){
+    }else if (map->blood<bloodBlue&&map->blood>=bloodYellow){
         boat->m_material->setColorf(1,1,0);
-    }else if (map.blood<bloodYellow&&map.blood>=bloodOrange){
+    }else if (map->blood<bloodYellow&&map->blood>=bloodOrange){
         boat->m_material->setColorf(1,0.5,0);
     }else{
         boat->m_material->setColorf(1,0,0);
     }
 
-    cVector3d f = map.getForceFeedback(newPosition,bs);
+    cVector3d f = map->getForceFeedback(newPosition,bs);
     hapticDevice->setForce(f);
 
-    double xx = xstep*(map.currentx-halfmax);
-    double yy = xstep*(map.currenty-halfmax);
+    double xx = xstep*(map->currentx-halfmax);
+    double yy = xstep*(map->currenty-halfmax);
     boat->setLocalPos(0.0,yy,xx);
 }
 #endif

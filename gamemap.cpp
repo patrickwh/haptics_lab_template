@@ -28,6 +28,10 @@ cVector3d GameMap::getForceFeedback(cVector3d newPosition,bool buttonClicked){
         }
     }
 
+    if(blood <= 0){
+        gameOver = true;
+    }
+
     if(blockedByCurrent){
         if(xpos == xmax || ypos == ymax || xpos == 0 || ypos == 0)
         {
@@ -62,6 +66,8 @@ cVector3d GameMap::getForceFeedback(cVector3d newPosition,bool buttonClicked){
             currentx = xstart;
             currenty = ystart;
             e->state = Exit::STATE_GAME_UNGOING;
+        }else if(e->state == Exit::STATE_GAME_OVER){
+            gameOver = true;
         }
     }
 
