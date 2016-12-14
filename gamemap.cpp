@@ -164,6 +164,7 @@ GameMap::GameMap(){
     rock << new Rock(45,46,4.5,1); //8
 
     rock << new Rock(35,66,5,35); //9
+    rock << new Rock(35,30,5,35); //10
 
     iceberg << new iceBerg(75,25,5);
     iceberg << new iceBerg(75,50,5);
@@ -183,6 +184,7 @@ GameMap::GameMap(){
     whirpool<< new whirPool(12,94,6);
     // Middle part
     whirpool<< new whirPool(50,84,8);
+    whirpool<< new whirPool(50,16,8);
 
 
     current << new Current(62.5,25,80,80,5);
