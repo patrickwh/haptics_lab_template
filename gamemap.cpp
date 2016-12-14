@@ -15,7 +15,11 @@ cVector3d GameMap::getForceFeedback(cVector3d newPosition,bool buttonClicked){
         BonusPoint* bp = bitr.next();
         bp->updateState(xpos,ypos);
         if(bp->triggered && bp->valid){
+
             blood += bp->ammount;
+            if(blood>bloodMax){
+                blood =bloodMax;
+            }
             bp->valid = false;
             bp->triggered = false;
         }
@@ -154,6 +158,8 @@ GameMap::GameMap(){
     rock << new Rock(45,45,1,1.5); //7
     rock << new Rock(45,46,4.5,1); //8
 
+    rock << new Rock(35,66,5,35); //9
+
     iceberg << new iceBerg(75,25,5);
     iceberg << new iceBerg(75,50,5);
     iceberg << new iceBerg(75,75,5);
@@ -170,6 +176,8 @@ GameMap::GameMap(){
     whirpool<< new whirPool(12,35,6);
     whirpool<< new whirPool(12,64,6);
     whirpool<< new whirPool(12,94,6);
+    // Middle part
+    whirpool<< new whirPool(50,84,8);
 
 
     current << new Current(62.5,25,80,80,5);

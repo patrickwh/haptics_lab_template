@@ -13,7 +13,7 @@ cVector3d iceBerg::iceForce(double x, double y,double t)
     double factor = -80.0;
     double f = 1000;
     double A = 8;
-    double warning =4;
+    double warning = 2;
 
     double sgnx =cSign(x-xpos);
     double sgny = cSign(y-ypos);
