@@ -9,6 +9,9 @@ cVector3d GameMap::getForceFeedback(cVector3d newPosition,bool buttonClicked){
 
     cVector3d f(0,0,0);
 
+    cVector3d fcentering = -300.0f * newPosition;
+    fcentering(2) = 0;
+
     // bonus points
     QListIterator<BonusPoint*> bitr(bonus);
     while(bitr.hasNext()){
@@ -76,13 +79,10 @@ cVector3d GameMap::getForceFeedback(cVector3d newPosition,bool buttonClicked){
                 blockedByCurrent = true;
                 triggeredCurrent = cur;
             }
-        }
+        }else f.add(fcentering);
     }
 
     cVector3d fwave = wave->getForceFeedback(xpos,ypos,totalTime);
-
-    cVector3d fcentering = -300.0f * newPosition;
-    fcentering(2) = 0;
 
     // rocks
     bool isRocktriggered = false;
@@ -128,7 +128,6 @@ cVector3d GameMap::getForceFeedback(cVector3d newPosition,bool buttonClicked){
             speedScale = 1.5;
         }else{
             f.add(fwave);
-            f.add(fcentering);
             speedScale = 1.0;
         }
     }
