@@ -19,6 +19,11 @@ class GameMap
 {
 public:
 
+    const static int STOP = 0;
+    const static int GAME_OVER = -1;
+    const static int GAME_WIN = 1;
+    const static int GAME_ON_GOING = 2;
+
     double totalTime;
 
     double xmax = 100;
@@ -29,7 +34,7 @@ public:
     bool xpositionUpdated = false;
     bool ypositionUpdated = false;
     bool blockedByCurrent = false;
-    bool gameOver = false;
+    int gameState;
 
     cVector3d getForceFeedback(cVector3d newPosition,bool buttonClicked);
 
@@ -41,6 +46,7 @@ public:
     QList <Current*> current;
     QList <Exit*> exit;
     QList <BonusPoint*> bonus;
+
 
     GameMap();
 

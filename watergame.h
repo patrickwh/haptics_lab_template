@@ -52,9 +52,18 @@ public:
     cMaterialPtr boatc;
     cMaterialPtr boatc2;
     cWorld* world;
+    cCamera* camera;
+    cLabel* winLabel;
+    cLabel* lostLabel;
+    cLabel* score;
+    cLabel* ready;
+    cLabel* retry;
+    cFont *font = NEW_CFONTCALIBRI20();
 
     QList<cShapeSphere*> curObjList;
     QList<cShapeSphere*> bonusObjList;
+    QList<cShapeBox*> curBoxList;
+
     //**************************************************************************************
 
 };
@@ -68,6 +77,7 @@ WaterGame::WaterGame(){
 void WaterGame::initialize(cWorld* world, cCamera* camera)
 {
     this->world = world;
+    this->camera = camera;
     //Change the background
     world->setBackgroundColor(0.2f, 0, 0.31f);
 
@@ -81,6 +91,49 @@ void WaterGame::initialize(cWorld* world, cCamera* camera)
     boatc2->m_specular.set(1.0, 1.0, 1.0);
 
     // *************************** ADD OBJECTS INTO THE WORLD******************************
+
+    // Lable
+    // Create a font
+
+
+
+    // Create a label used to show how debug output can be handled
+    winLabel = new cLabel(font);
+    std::stringstream ss;
+    ss<<"YOU WIN!";
+    winLabel->setString(ss.str());
+    winLabel->setLocalPos(200,380,0);
+    winLabel->setFontScale(8);
+    // You loss
+    lostLabel = new cLabel(font);
+    std::stringstream ss1;
+    ss1<<"YOU LOSS!";
+    lostLabel->setString(ss1.str());
+    lostLabel->setLocalPos(200,380,0);
+    lostLabel->setFontScale(8);
+    // The label
+    ready = new cLabel(font);
+    std::stringstream sre;
+    sre<<"Press Button to START!";
+    ready->setString(sre.str());
+    ready->setLocalPos(160,380,0);
+    ready->setFontScale(4);
+    camera->m_frontLayer->addChild(ready);
+    // Score
+    score = new cLabel(font);
+    score->setLocalPos(260,300,0);
+    score->setFontScale(4);
+    // retry
+    retry = new cLabel(font);
+    std::stringstream ssretry;
+    ssretry<<"Press to RESTART!";
+    retry->setString(ssretry.str());
+    retry->setLocalPos(280,280,0);
+    retry->setFontScale(3);
+
+
+
+
     // iceberg object
     QListIterator <iceBerg*> iitr(map->iceberg);
     while(iitr.hasNext()){
@@ -90,7 +143,8 @@ void WaterGame::initialize(cWorld* world, cCamera* camera)
         double y = xstep*(ice->ypos-halfmax);
         cShapeSphere* icebergsp = new cShapeSphere(icesr);
         icebergsp->setLocalPos(0.0,y,x);
-        world->addChild(icebergsp);
+        // world->addChild(icebergsp);
+        curObjList<<icebergsp;
     } 
     // bonus object
     initialBonuspoints();
@@ -107,7 +161,7 @@ void WaterGame::initialize(cWorld* world, cCamera* camera)
         world->addChild(exitsp);
         if(exit->TYPE_FAKE_TRANSFER_TO_START==-1){
                   exitsp->m_material->setYellowGold();
-              }
+              };
     }
     // current object
     QListIterator <Current*> citr(map->current);
@@ -144,7 +198,8 @@ void WaterGame::initialize(cWorld* world, cCamera* camera)
         double x = xstep*(r->xpos-halfmax+r->height/2.0);
         double y = xstep*(r->ypos-halfmax+r->width/2.0);
         rockbx->setLocalPos(0.0,y,x);
-        world->addChild(rockbx);
+       // world->addChild(rockbx);
+        curBoxList<<rockbx;
     }
     // whirpool object
     QListIterator <whirPool*> witr(map->whirpool);
@@ -162,7 +217,8 @@ void WaterGame::initialize(cWorld* world, cCamera* camera)
         whirpoolsp->setTransparencyLevel(0.1);
         whirpoolsp->setLocalPos(0.0,y,x);
        //        whirpoolsp->m_material = whirpoolc;
-        world->addChild(whirpoolsp);
+        // world->addChild(whirpoolsp);
+        curObjList<<whirpoolsp;
     }
     // boat object
     boat = new cShapeSphere(0.002);
@@ -211,13 +267,24 @@ void WaterGame::removeAllCurrentObject(){
         cShapeSphere* co = coitr.next();
         world->removeChild(co);
     }
+    QListIterator<cShapeBox*> boitr(curBoxList);
+    while(boitr.hasNext()){
+        cShapeBox* bo = boitr.next();
+        world->removeChild(bo);
+    }
 }
+
 
 void WaterGame::addAllCurrentObject(){
     QListIterator<cShapeSphere*> coitr(curObjList);
     while(coitr.hasNext()){
         cShapeSphere* co = coitr.next();
         world->addChild(co);
+    }
+    QListIterator<cShapeBox*> boitr(curBoxList);;
+    while(boitr.hasNext()){
+        cShapeBox* bo = boitr.next();
+        world->addChild(bo);
     }
 }
 
@@ -260,28 +327,60 @@ void WaterGame::updateHaptics(cGenericHapticDevice* hapticDevice, double timeSte
     cVector3d newPosition;
     hapticDevice->getPosition(newPosition);
 
+
+
     double x = -newPosition(0);
     double y = newPosition(1);
+
+
+    bool bs;
+    hapticDevice->getUserSwitch(0, bs);
+    bool bs2;
+    hapticDevice->getUserSwitch(1, bs2);
+
+    std::cout<<"st: "<<map->gameState<<std::endl;
+
+    if(map->gameState == GameMap::GAME_WIN){
+        std::stringstream sscore;
+        sscore<<"Your score: "<<int(map->blood/10);
+        score->setString(sscore.str());
+        camera->m_frontLayer->addChild(winLabel);
+        camera->m_frontLayer->addChild(score);
+        delete map;
+        map = new GameMap();
+        return;
+    }
+
+    if(map->gameState == GameMap::GAME_OVER){
+        camera->m_frontLayer->addChild(lostLabel);
+        camera->m_frontLayer->addChild(retry);
+        delete map;
+        map = new GameMap();
+        return;
+    }
+
+    if(map->gameState == GameMap::STOP){
+        if(bs){
+            camera->m_frontLayer->removeChild(ready);
+            camera->m_frontLayer->removeChild(winLabel);
+            camera->m_frontLayer->removeChild(lostLabel);
+            camera->m_frontLayer->removeChild(score);
+            camera->m_frontLayer->removeChild(retry);
+            initialBonuspoints();
+            map->gameState = GameMap::GAME_ON_GOING;
+        }else return;
+        std::cout<<"Blood: "<<map->blood<<std::endl;
+
+    }
 
     if(!map->blockedByCurrent){
         map->updateXpos(x);
         map->updateYpos(y);
     }
 
-    if(map->gameOver){
-        delete map;
-        map = new GameMap();
-        initialBonuspoints();
-    }
-
     map->setTotalTime(totalTime);
 
     updateBonuspoints();
-
-    bool bs;
-    hapticDevice->getUserSwitch(0, bs);
-    bool bs2;
-    hapticDevice->getUserSwitch(1, bs2);
 
     if(bs2)
     {
@@ -291,6 +390,7 @@ void WaterGame::updateHaptics(cGenericHapticDevice* hapticDevice, double timeSte
         boat->m_material = boatc2;
         removeAllCurrentObject();
     }
+
     double bloodLevl = map->bloodMax/5.0;
     double bloodGreen = map->bloodMax-bloodLevl;
     double bloodBlue = map->bloodMax-2*bloodLevl;

@@ -29,7 +29,7 @@ cVector3d GameMap::getForceFeedback(cVector3d newPosition,bool buttonClicked){
     }
 
     if(blood <= 0){
-        gameOver = true;
+        gameState = GameMap::GAME_OVER;
     }
 
     if(blockedByCurrent){
@@ -67,7 +67,7 @@ cVector3d GameMap::getForceFeedback(cVector3d newPosition,bool buttonClicked){
             currenty = ystart;
             e->state = Exit::STATE_GAME_UNGOING;
         }else if(e->state == Exit::STATE_GAME_OVER){
-            gameOver = true;
+            gameState = GameMap::GAME_WIN;
         }
     }
 
@@ -148,9 +148,11 @@ void GameMap::setTotalTime(double t){
 }
 
 GameMap::GameMap(){
+    gameState = GameMap::STOP;
     int ainit = 10;
     double finit = 1;
     wave = new Wave(ainit,finit);
+    //
     rock << new Rock(72.5,-5,125,5);
     rock << new Rock(25.5,-5,125,5);
 
@@ -187,7 +189,7 @@ GameMap::GameMap(){
     whirpool<< new whirPool(50,16,8);
 
 
-    current << new Current(62.5,25,80,80,5);
+    current << new Current(62.5,23,85,81,5);
 
     exit<< new Exit(50.0,0.0,Exit::TYPE_FAKE_TRANSFER_TO_START);
     exit<< new Exit(50.0,100.0,Exit::TYPE_FAKE_TRANSFER_TO_START);
