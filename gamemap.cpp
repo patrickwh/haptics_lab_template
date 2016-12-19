@@ -128,13 +128,13 @@ cVector3d GameMap::getForceFeedback(cVector3d newPosition,bool buttonClicked){
     }
 
     if(isRocktriggered || iswhirpooltriggered){
-        speedScale = 0.2;
+        speedScale = 0.8;
     }else{
         if(inCurrentEntrance){
             speedScale = 1.5;
         }else{
             f.add(fwave);
-            speedScale = 1.0;
+            speedScale = 1.5;
         }
     }
 
@@ -193,7 +193,7 @@ GameMap::GameMap(){
 
     exit<< new Exit(50.0,0.0,Exit::TYPE_FAKE_TRANSFER_TO_START);
     exit<< new Exit(50.0,100.0,Exit::TYPE_FAKE_TRANSFER_TO_START);
-    exit<< new Exit(0.0,50.0,Exit::TYPE_REAL);
+    exit<< new Exit(0.0,50.0,Exit::TYPE_FAKE_TRANSFER_TO_START);
     exit<< new Exit(100.0,50.0,Exit::TYPE_REAL);
 
     generateRandomBouns(10);

@@ -8,7 +8,7 @@ cVector3d whirPool::poolForce(double x, double y,double t){
 
     cVector3d force(0,0,0);
     double factor = 50.0;
-    double f = 500;
+    double f = 100;
     double A = 5;
     double warning =2;
     double dis = sqrt((x-xpos)*(x-xpos)+(y-ypos)*(y-ypos));

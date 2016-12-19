@@ -11,7 +11,7 @@ void Rock::setEnabled(bool v){
 
 cVector3d Rock::getForceFeedback(double x,double y,double t,bool xupdate,bool yupdate){
     cVector3d force(0,0,0);
-    int A = 10;
+    int A = 5;
     double f = 100;
 
     if(enabled){
